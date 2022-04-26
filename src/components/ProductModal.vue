@@ -36,9 +36,15 @@
                 <label for="customFile" class="form-label">或 上傳圖片
                   <i class="fas fa-spinner fa-spin"></i>
                 </label>
-                <input type="file" id="customFile" class="form-control">
+                <input
+                  type="file"
+                  id="customFile"
+                  class="form-control"
+                  ref="fileInput"
+                  @change="uploadFile"
+                >
               </div>
-              <img class="img-fluid" alt="">
+              <img :src="tempProduct.imgLink" class="img-fluid" alt="">
               <!-- 延伸技巧，多圖 -->
               <div class="mt-5">
                 <div class="mb-3 input-group" >
@@ -208,6 +214,22 @@ export default {
     },
     hideModal () {
       this.modal.hide()
+    },
+    uploadFile () {
+      const uploadedFile = this.$refs.fileInput.files[0]
+      console.dir(uploadedFile) // 為何用dir?
+      const formData = new FormData() // 依照api文件，限制用form格式
+      formData.append('file-to-upload', uploadedFile) // 依照api文件，要加入欄位
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/upload`
+      const select = this.$refs.fileInput.id // 取得上傳圖檔的input元素 id
+      this.$http.post(url, formData)
+        .then((res) => {
+          console.log(res.data)
+          if (res.data.success) {
+            this.tempProduct.imgLink = res.data.imageUrl // 將上傳成功後產生的連結傳進data變數
+            document.getElementById(select).value = '' // 清空input value
+          }
+        })
     }
   },
 
