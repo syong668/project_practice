@@ -1,4 +1,5 @@
 <template>
+<loadingTip :active="isLoading"></loadingTip>
 <div class="container mt-5">
   <form class="row justify-content-center"
   @submit.prevent="signIn"
@@ -46,13 +47,15 @@ export default {
       user: {
         username: '',
         password: ''
-      }
+      },
+      isLoading: false
     }
   },
   methods: {
     signIn () {
       const api = `${process.env.VUE_APP_API}admin/signin`
       console.log(api)
+      this.isLoading = true
       this.$http.post(api, this.user)
         .then((res) => {
           if (res.data.success) {
@@ -64,6 +67,7 @@ export default {
             console.log(res)
 
             this.$router.push('/dashboard/products')
+            this.isLoading = false
           }
         })
     }

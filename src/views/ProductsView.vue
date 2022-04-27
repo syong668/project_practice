@@ -1,4 +1,5 @@
 <template>
+  <loadingTip :active="isLoading"></loadingTip>
   <div class="text-end mt-3">
     <button class="btn btn-primary" type="button" @click="openModal(true)">
     增加產品
@@ -65,7 +66,8 @@ export default {
       products: [], // 所有產品
       pagination: {}, // 總頁數
       tempProduct: {}, // 在新增產品時輸入的產品資料、當前載入的資料
-      isNew: false // 透過這個屬性，來判斷是否是新增(true)or編輯(false)的狀態
+      isNew: false, // 透過這個屬性，來判斷是否是新增(true)or編輯(false)的狀態
+      isLoading: false // 讀取效果的開關
     }
   },
   components: {
@@ -77,13 +79,14 @@ export default {
     // 取得產品列表資訊
     getProducts () {
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products`
-      console.log(api)
+      this.isLoading = true
       this.$http.get(api)
         .then((res) => {
           if (res.data.success) {
             console.log(res)
             this.products = res.data.products // 取得所有產品資料並賦予到data裡的products
             this.pagination = res.data.pagination // 取得總頁碼並賦予到data裡的pagination
+            this.isLoading = false
           }
         })
     },
@@ -106,7 +109,6 @@ export default {
     updateProduct (item) {
       // 將emit傳入的新產品資料item，更新到tempProduct
       this.tempProduct = item
-      console.log('price型別' + typeof this.tempProduct.price)
 
       // 新增產品資料，以下預設api及傳送方法
       let api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product`
@@ -120,11 +122,13 @@ export default {
 
       // 上面判斷完畢後，最後執行遠端傳送
       const productComponent = this.$refs.productModal
+      this.isLoading = true
       this.$http[httpMethod](api, { data: this.tempProduct })
         .then((res) => {
           console.log(res) // 確認結果
           productComponent.hideModal() // 新增完畢後關閉彈出窗
           this.getProducts() // 將產品列表更新並重新渲染
+          this.isLoading = false
         })
     },
 
@@ -138,12 +142,14 @@ export default {
     // 刪除視窗裡的「確認刪除」按鈕
     delProduct () {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`
+      this.isLoading = true
       this.$http.delete(url)
         .then((response) => {
           console.log(response.data)
           const delComponent = this.$refs.delModal
           delComponent.hideModal()
           this.getProducts()
+          this.isLoading = false
         })
     }
   },
