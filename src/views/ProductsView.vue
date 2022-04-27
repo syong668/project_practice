@@ -35,7 +35,7 @@
               class="btn btn-outline-primary btn-sm"
               @click="openModal(false, item)"
             >編輯</button>
-            <button class="btn btn-outline-danger btn-sm">刪除</button>
+            <button class="btn btn-outline-danger btn-sm" @click="openDelProductModal(item)">刪除</button>
           </div>
         </td>
       </tr>
@@ -51,24 +51,30 @@
     :product="tempProduct"
   >
   </ProductModal>
+  <DelModal :item="tempProduct" ref="delModal" @del-item="delProduct"/>
 </template>
 
 <script>
+// 載入產品列表內的兩個彈出窗
 import ProductModal from '../components/ProductModal.vue'
+import DelModal from '@/components/DelModal.vue'
 
 export default {
   data () {
     return {
       products: [], // 所有產品
       pagination: {}, // 總頁數
-      tempProduct: {}, // 在新增產品時輸入的產品資料
+      tempProduct: {}, // 在新增產品時輸入的產品資料、當前載入的資料
       isNew: false // 透過這個屬性，來判斷是否是新增(true)or編輯(false)的狀態
     }
   },
   components: {
-    ProductModal
+    // 區域註冊 兩個彈出窗:新增(修改)產品、刪除產品
+    ProductModal,
+    DelModal
   },
   methods: {
+    // 取得產品列表資訊
     getProducts () {
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products`
       console.log(api)
@@ -81,6 +87,7 @@ export default {
           }
         })
     },
+    // 開啟新增/修改產品表單
     openModal (isNew, item) {
       console.log(isNew, item)
       if (isNew) {
@@ -94,6 +101,8 @@ export default {
       const productComponent = this.$refs.productModal
       productComponent.showModal() // 將表單彈出窗打開
     },
+
+    // 新增/修改表單裡的「確認」按鈕
     updateProduct (item) {
       // 將emit傳入的新產品資料item，更新到tempProduct
       this.tempProduct = item
@@ -116,6 +125,25 @@ export default {
           console.log(res) // 確認結果
           productComponent.hideModal() // 新增完畢後關閉彈出窗
           this.getProducts() // 將產品列表更新並重新渲染
+        })
+    },
+
+    // 開啟 刪除Modal
+    openDelProductModal (item) {
+      this.tempProduct = { ...item } // 載入當前資料(利於delProduct()代入id參數)
+      const delComponent = this.$refs.delModal
+      delComponent.showModal()
+    },
+
+    // 刪除視窗裡的「確認刪除」按鈕
+    delProduct () {
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`
+      this.$http.delete(url)
+        .then((response) => {
+          console.log(response.data)
+          const delComponent = this.$refs.delModal
+          delComponent.hideModal()
+          this.getProducts()
         })
     }
   },

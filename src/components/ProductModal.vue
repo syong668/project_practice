@@ -45,25 +45,39 @@
                 >
               </div>
               <img :src="tempProduct.imgLink" class="img-fluid" alt="">
-              <!-- 延伸技巧，多圖 -->
-              <div class="mt-5">
-                <div class="mb-3 input-group" >
-                  <input
-                    type="url"
-                    class="form-control form-control"
-                    placeholder="請輸入連結"
-                    v-model="tempProduct.removeLink"
-                    >
-                  <button type="button" class="btn btn-outline-danger">
-                    移除
-                  </button>
-                </div>
-                <div>
-                  <button class="btn btn-outline-primary btn-sm d-block w-100">
-                    新增圖片
-                  </button>
-                </div>
+
+            <!-- 延伸技巧，多圖 -->
+            <div class="mt-5" v-if="tempProduct.images">
+              <label class="form-label">輸入多張圖片網址</label>
+              <div v-for="(image, key) in tempProduct.images" :key="key" class="mb-3 input-group">
+                <input
+                  type="url"
+                  class="form-control form-control"
+                  placeholder="請輸入連結"
+                  v-model="tempProduct.images[key]"
+                  >
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  @click="tempProduct.images.splice(key, 1)"
+                >
+                  移除
+                </button>
               </div>
+                <!-- 新增圖片的按鈕顯示原則 -->
+                <!-- 1. 圖片連結有輸入，才能再繼續新增圖片(圖片='' false) -->
+                <!-- 2. 當前尚未新增圖片(圖片數=0 布林值false 將他反轉為true執行v-if判斷) -->
+                <!-- 3. 限制最多5張 -->
+              <div v-if="tempProduct.images[tempProduct.images.length - 1] &&tempProduct.images.length <= 4 || !tempProduct.images.length ">
+                <button
+                  class="btn btn-outline-primary btn-sm d-block w-100"
+                  @click="tempProduct.images.push('')"
+                >
+                  新增圖片
+                </button>
+              </div>
+            </div>
+
             </div>
             <div class="col-sm-8">
               <div class="mb-3">
@@ -183,7 +197,7 @@
 </template>
 
 <script>
-import Modal from 'bootstrap/js/dist/modal'
+import modalMixin from '@/mixins/modalMixin'
 
 export default {
   props: {
@@ -197,6 +211,10 @@ export default {
     // 由於單向數據流，props傳入的內容無法被修改，故需要監聽product有變動時，將資料更新到tempProduct
     product () {
       this.tempProduct = this.product
+      console.log('this.tempProduct.images結果是：' + this.tempProduct.images)
+      if (!this.tempProduct.images) {
+        this.tempProduct.images = [] // object 是true，v-if將會判斷顯示
+      }
     }
   },
   // 準備一個data的內容，會回傳一個物件
@@ -209,12 +227,7 @@ export default {
 
   // 在裡面新增方法，讓外部元件可以呼叫他
   methods: {
-    showModal () {
-      this.modal.show()
-    },
-    hideModal () {
-      this.modal.hide()
-    },
+    // 上傳圖片
     uploadFile () {
       const uploadedFile = this.$refs.fileInput.files[0]
       console.dir(uploadedFile) // 為何用dir?
@@ -232,10 +245,6 @@ export default {
         })
     }
   },
-
-  // 對它進行實體，實體必須在這個元件載入之後，才能正常運作
-  mounted () {
-    this.modal = new Modal(this.$refs.modal)
-  }
+  mixins: [modalMixin]
 }
 </script>
