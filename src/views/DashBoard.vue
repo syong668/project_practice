@@ -1,17 +1,26 @@
 <template>
   <Navbar></Navbar>
   <div class="container-fluid">
+    <ToastMessages></ToastMessages>
     <router-view/>
   </div>
 </template>
 
 <script>
-
+import emitter from '@/methods/emitter'
+import ToastMessages from '@/components/ToastMessages.vue'
 import Navbar from '../components/NavbarView.vue'
 
 export default {
   components: {
-    Navbar
+    Navbar,
+    ToastMessages
+  },
+  // provide 可以讓內層的元件使用外層的功能
+  provide () {
+    return {
+      emitter
+    }
   },
   created () {
     // document.cookie.replace(/(?:(?:^|.*;\s*)test2\s*\=\s*([^;]*).*$)|^.*$/, "$1");

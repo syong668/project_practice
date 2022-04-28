@@ -123,10 +123,10 @@ export default {
       // 上面判斷完畢後，最後執行遠端傳送
       const productComponent = this.$refs.productModal
       this.isLoading = true
+      productComponent.hideModal() // 新增完畢後關閉彈出窗
       this.$http[httpMethod](api, { data: this.tempProduct })
         .then((res) => {
           console.log(res) // 確認結果
-          productComponent.hideModal() // 新增完畢後關閉彈出窗
           this.getProducts() // 將產品列表更新並重新渲染
           this.isLoading = false
         })
