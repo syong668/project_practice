@@ -1,26 +1,34 @@
 <template>
-  <!-- 從boostrap複製過來的 -->
-  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+  <div
+    class="toast"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    ref="toast"
+  >
     <div class="toast-header">
-      <img src="..." class="rounded me-2" alt="...">
-      <strong class="me-auto">Bootstrap</strong>
-      <small>11 mins ago</small>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      <span
+        :class="`bg-${msg.style}`"
+        class="p-2 rounded me-2 d-inline-block"
+      ></span>
+      <strong class="me-auto">{{ msg.title }}</strong>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="toast"
+        aria-label="Close"
+      ></button>
     </div>
-    <div class="toast-body">
-      Hello, world! This is a toast message.
+    <div class="toast-body" v-if="msg.content">
+      {{ msg.content }}
     </div>
   </div>
 </template>
-
 <script>
 import Toast from 'bootstrap/js/dist/toast'
-
 export default {
   name: 'ToastView',
-  props: [
-    'msg'
-  ],
+  props: ['msg'],
   mounted () {
     const toastEl = this.$refs.toast
     const toast = new Toast(toastEl, {

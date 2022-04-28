@@ -46,6 +46,10 @@
     :product="tempProduct"
     在ProductModal定義的props名稱= 底下data定義的資料
    -->
+  <PageView
+    :page="pagination"
+    @emit-page="getProducts"
+  ></PageView>
   <ProductModal
     @update-product="updateProduct"
     ref="productModal"
@@ -59,26 +63,30 @@
 // 載入產品列表內的兩個彈出窗
 import ProductModal from '../components/ProductModal.vue'
 import DelModal from '@/components/DelModal.vue'
+import PageView from '@/components/PageView.vue'
 
 export default {
   data () {
     return {
       products: [], // 所有產品
-      pagination: {}, // 總頁數
+      pagination: {}, // 總頁數(會經由props傳遞到PageView)
       tempProduct: {}, // 在新增產品時輸入的產品資料、當前載入的資料
       isNew: false, // 透過這個屬性，來判斷是否是新增(true)or編輯(false)的狀態
       isLoading: false // 讀取效果的開關
     }
   },
   components: {
-    // 區域註冊 兩個彈出窗:新增(修改)產品、刪除產品
+    // 區域註冊 兩個彈出窗:新增(修改)產品、刪除產品，以及分頁
     ProductModal,
-    DelModal
+    DelModal,
+    PageView
   },
+  inject: ['emitter'],
   methods: {
     // 取得產品列表資訊
-    getProducts () {
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products`
+    // (page = 1) 這是參數預設值的代入，若page無值預設代入1
+    getProducts (page = 1) {
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products/?page=${page}`
       this.isLoading = true
       this.$http.get(api)
         .then((res) => {
@@ -129,6 +137,21 @@ export default {
           console.log(res) // 確認結果
           this.getProducts() // 將產品列表更新並重新渲染
           this.isLoading = false
+
+          // 將更新狀態利用mitt跨元件 傳送至ToastMessage
+          if (res.data.success) {
+            this.getProducts()
+            this.emitter.emit('push-message', {
+              style: 'success',
+              title: '更新成功'
+            })
+          } else {
+            this.emitter.emit('push-message', {
+              style: 'danger',
+              title: '更新失敗',
+              content: res.data.message.join('、')
+            })
+          }
         })
     },
 
@@ -150,6 +173,17 @@ export default {
           delComponent.hideModal()
           this.getProducts()
           this.isLoading = false
+          if (response.data.success) {
+            this.emitter.emit('push-message', {
+              style: 'success',
+              title: '刪除成功'
+            })
+          } else {
+            this.emitter.emit('push-message', {
+              style: 'danger',
+              title: '刪除失敗'
+            })
+          }
         })
     }
   },

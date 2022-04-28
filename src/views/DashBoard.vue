@@ -36,7 +36,10 @@ export default {
         console.log(res)
         console.log(res.data.message)
         if (!res.data.success) { // 回傳是false的話讓他執行true的動作
-          this.$router.push('login')
+          this.$router.push('/login')
+          // 情況:跳至http://localhost:8080/#/dashboard/login 登入頁面變成是一個空白的頁面
+          // 正確要是http://localhost:8080/#/login
+          // 路徑請寫/login 非login
         }
       })
   }
