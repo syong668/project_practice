@@ -10,7 +10,8 @@
 
 <script>
 
-import ToastView from '../components/ToastView.vue'
+// import ToastView from '../components/ToastView.vue'
+import ToastView from '../components/HelloWorld.vue'
 
 export default {
   components: { ToastView }
