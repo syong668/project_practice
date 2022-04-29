@@ -12,5 +12,4 @@
 
 // @import "../node_modules/bootstrap/scss/bootstrap";
 @import "./assets/all";
-
 </style>

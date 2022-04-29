@@ -21,10 +21,10 @@
         <td>{{item.category}}</td>
         <td>{{item.title}}</td>
         <td class="text-right">
-          {{item.origin_price}}
+          {{ $filters.currency(item.origin_price) }}
         </td>
         <td class="text-right">
-          {{item.price}}
+          {{ $filters.currency(item.price) }}
         </td>
         <td>
           <span class="text-success" v-if="item.is_enabled == 1 || item.enable == 1">啟用</span>
@@ -138,20 +138,7 @@ export default {
           this.getProducts() // 將產品列表更新並重新渲染
           this.isLoading = false
 
-          // 將更新狀態利用mitt跨元件 傳送至ToastMessage
-          if (res.data.success) {
-            this.getProducts()
-            this.emitter.emit('push-message', {
-              style: 'success',
-              title: '更新成功'
-            })
-          } else {
-            this.emitter.emit('push-message', {
-              style: 'danger',
-              title: '更新失敗',
-              content: res.data.message.join('、')
-            })
-          }
+          this.$httpMessageStatus(res) // 這段會執行:遠端傳送成功，將訊息傳遞至toast
         })
     },
 
@@ -173,17 +160,8 @@ export default {
           delComponent.hideModal()
           this.getProducts()
           this.isLoading = false
-          if (response.data.success) {
-            this.emitter.emit('push-message', {
-              style: 'success',
-              title: '刪除成功'
-            })
-          } else {
-            this.emitter.emit('push-message', {
-              style: 'danger',
-              title: '刪除失敗'
-            })
-          }
+
+          this.$httpMessageStatus(response, '刪除')
         })
     }
   },
