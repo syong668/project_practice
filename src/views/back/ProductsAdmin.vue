@@ -1,55 +1,60 @@
 <template>
   <loadingTip :active="isLoading"></loadingTip>
-  <div class="text-end mt-3">
-    <button class="btn btn-primary" type="button" @click="openModal(true)">
-    增加產品
-    </button>
+  <div class="container">
+    <div class="text-end pt-5">
+      <button class="btn btn-primary" type="button" @click="openModal(true)">
+      增加產品
+      </button>
+    </div>
+    <table class="container table mt-4 table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th width="120">分類</th>
+          <th>產品名稱</th>
+          <th width="120">原價</th>
+          <th width="120">售價</th>
+          <th width="100">是否啟用</th>
+          <th width="200">編輯</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white">
+        <tr v-for="item in products" :key="item.id">
+          <td>{{item.category}}</td>
+          <td>{{item.title}}</td>
+          <td class="text-right">
+            {{ $filters.currency(item.origin_price) }}
+          </td>
+          <td class="text-right">
+            {{ $filters.currency(item.price) }}
+          </td>
+          <td>
+            <span class="text-success" v-if="item.is_enabled == 1 || item.enable == 1">啟用</span>
+            <span class="text-muted" v-else>未啟用</span>
+          </td>
+          <td>
+            <div class="btn-group">
+              <button
+                class="btn btn-outline-primary btn-sm"
+                @click="openModal(false, item)"
+              >編輯</button>
+              <button class="btn btn-outline-danger btn-sm" @click="openDelProductModal(item)">刪除</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <PageView
+      class="d-flex justify-content-center mt-5"
+      :page="pagination"
+      @emit-page="getProducts"
+    ></PageView>
   </div>
-  <table class="table mt-4">
-    <thead>
-      <tr>
-        <th width="120">分類</th>
-        <th>產品名稱</th>
-        <th width="120">原價</th>
-        <th width="120">售價</th>
-        <th width="100">是否啟用</th>
-        <th width="200">編輯</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="item in products" :key="item.id">
-        <td>{{item.category}}</td>
-        <td>{{item.title}}</td>
-        <td class="text-right">
-          {{ $filters.currency(item.origin_price) }}
-        </td>
-        <td class="text-right">
-          {{ $filters.currency(item.price) }}
-        </td>
-        <td>
-          <span class="text-success" v-if="item.is_enabled == 1 || item.enable == 1">啟用</span>
-          <span class="text-muted" v-else>未啟用</span>
-        </td>
-        <td>
-          <div class="btn-group">
-            <button
-              class="btn btn-outline-primary btn-sm"
-              @click="openModal(false, item)"
-            >編輯</button>
-            <button class="btn btn-outline-danger btn-sm" @click="openDelProductModal(item)">刪除</button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+
   <!-- props 請記得前內後外
     :product="tempProduct"
     在ProductModal定義的props名稱= 底下data定義的資料
-   -->
-  <PageView
-    :page="pagination"
-    @emit-page="getProducts"
-  ></PageView>
+  -->
   <ProductModal
     @update-product="updateProduct"
     ref="productModal"
@@ -61,7 +66,7 @@
 
 <script>
 // 載入產品列表內的兩個彈出窗
-import ProductModal from '../components/ProductModal.vue'
+import ProductModal from '@/components/ProductModal.vue'
 import DelModal from '@/components/DelModal.vue'
 import PageView from '@/components/PageView.vue'
 

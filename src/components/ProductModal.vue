@@ -61,7 +61,7 @@
                   class="btn btn-outline-danger"
                   @click="tempProduct.images.splice(key, 1)"
                 >
-                  移除
+                  <i class="bi bi-x-lg"></i>
                 </button>
               </div>
                 <!-- 新增圖片的按鈕顯示原則 -->

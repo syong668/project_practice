@@ -11,6 +11,9 @@ import router from './router'
 import loadingTip from 'vue3-loading-overlay'
 import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
 
+// 載入boostrap的icon
+import 'bootstrap-icons/font/bootstrap-icons.css'
+
 // 載入千分位
 import { currency } from './methods/filters'
 
