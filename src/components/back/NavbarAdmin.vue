@@ -8,13 +8,13 @@
       <div class="d-flex justify-content-between collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link to="/dashboard/products" class="nav-link active" aria-current="page">產品列表</router-link>
+            <router-link to="/dashboard/products" class="nav-link" aria-current="page" exact-active-class="active">產品列表</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="" class="nav-link" href="#">訂單列表</router-link>
+            <router-link to="/dashboard/orders" class="nav-link" exact-active-class="active">訂單列表</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">優惠券</a>
+            <router-link to="/dashboard/coupons" class="nav-link" exact-active-class="active">優惠券</router-link>
           </li>
         </ul>
         <ul class="navbar-nav">

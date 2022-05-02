@@ -15,7 +15,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/back/LoginView.vue')
+    component: () => import('../views/back/LoginAdmin.vue')
   },
   {
     path: '/dashboard',
@@ -25,6 +25,14 @@ const routes = [
       {
         path: 'products',
         component: () => import('../views/back/ProductsAdmin.vue')
+      },
+      {
+        path: 'orders',
+        component: () => import('../views/back/OrdersAdmin.vue')
+      },
+      {
+        path: 'coupons',
+        component: () => import('../views/back/CouponsAdmin.vue')
       }
     ]
   }

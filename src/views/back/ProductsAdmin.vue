@@ -66,9 +66,9 @@
 
 <script>
 // 載入產品列表內的兩個彈出窗
-import ProductModal from '@/components/ProductModal.vue'
-import DelModal from '@/components/DelModal.vue'
-import PageView from '@/components/PageView.vue'
+import ProductModal from '@/components/back/ProductModal.vue'
+import DelModal from '@/components/back/DelModal.vue'
+import PageView from '@/components/back/PageAdmin.vue'
 
 export default {
   data () {
