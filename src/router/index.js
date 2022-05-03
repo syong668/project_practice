@@ -35,6 +35,20 @@ const routes = [
         component: () => import('../views/back/CouponsAdmin.vue')
       }
     ]
+  },
+  {
+    path: '/user',
+    component: () => import('../views/front/UserBoard.vue'),
+    children: [
+      {
+        path: 'cart',
+        component: () => import('../views/front/UserCart.vue')
+      },
+      {
+        path: 'products',
+        component: () => import('../views/front/UserProduct.vue')
+      }
+    ]
   }
 ]
 

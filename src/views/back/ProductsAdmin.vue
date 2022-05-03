@@ -28,7 +28,7 @@
             {{ $filters.currency(item.price) }}
           </td>
           <td>
-            <span class="text-success" v-if="item.is_enabled == 1 || item.enable == 1">啟用</span>
+            <span class="text-success" v-if="item.is_enabled == 1">啟用</span>
             <span class="text-muted" v-else>未啟用</span>
           </td>
           <td>
@@ -141,9 +141,8 @@ export default {
         .then((res) => {
           console.log(res) // 確認結果
           this.getProducts() // 將產品列表更新並重新渲染
-          this.isLoading = false
-
           this.$httpMessageStatus(res) // 這段會執行:遠端傳送成功，將訊息傳遞至toast
+          this.isLoading = false
         })
     },
 

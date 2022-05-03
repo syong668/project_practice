@@ -2,8 +2,13 @@
 
 // Required
 @import "./helper/variables";
-@import "./back/ProductsAdmin";
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/root";
 
 @import "~bootstrap/scss/bootstrap";
+
+// front
+@import "./front/UserCart";
+
+// back
+@import "./back/ProductsAdmin";

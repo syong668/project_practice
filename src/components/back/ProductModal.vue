@@ -163,7 +163,7 @@
               <div class="mb-3">
                 <div class="form-check">
                   <input
-                    v-model="tempProduct.enable"
+                    v-model="tempProduct.is_enabled"
                     class="form-check-input"
                     type="checkbox"
                     :true-value="1"
