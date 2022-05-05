@@ -1,0 +1,25 @@
+.index-img{
+  width: 500px;
+  height: 500px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+.other-img {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  img {
+    width: 15%;
+    margin-right: 8px;
+    cursor: pointer;
+    &:hover {
+      border: 2px solid $primary;
+    }
+  }
+}
+

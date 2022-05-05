@@ -1,3 +1,51 @@
-.rrrddd {
-  border: 5px solid blue;
+.cursor-hover{
+  cursor: pointer;
 }
+
+.card-imge{
+  height: 300px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  transition: 0.5s;
+}
+
+.product-hover{
+  position: relative;
+  z-index:1;
+
+  .mask, .mask-white {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity:0;
+    position: absolute;
+    z-index: 2;
+    top:0;
+  }
+
+  .mask-white {
+    background-color: rgb(255, 255, 255);
+    opacity:0.4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .add-cart-btn{
+    display: none;
+    position: absolute;
+    z-index: 3;
+    bottom:0;
+  }
+  &:hover .mask {
+    opacity: 0.4;
+    transition: .6s;
+  }
+
+  &:hover .add-cart-btn{
+    display: block;
+  }
+}
+
+
