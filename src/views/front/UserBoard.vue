@@ -2,7 +2,7 @@
     <!-- 之後再把user navbar拆出來做成元件 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-        <router-link class="navbar-brand" to="/user/cart"
+        <router-link class="navbar-brand" to="/user/"
           >MyProject</router-link
         >
       </div>

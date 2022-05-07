@@ -1,112 +1,81 @@
 <template>
-  <loadingTip :active="isLoading"></loadingTip>
-  <div class="container">
-    <div class="row mt-4">
-      <div class="col-md-2 d-none d-md-block">
-        <div class="list-group list-group-flush rounded-0">
-          <!-- <a href="#" class="list-group-item list-group-item-action disabled fw-bold">產品類別</a> -->
-          <a
-            href="#"
-            class="list-group-item list-group-item-action active"
-            aria-current="true"
-          >
-            SALE
-          </a>
-          <a href="#" class="list-group-item list-group-item-action">SWIM</a>
-          <a href="#" class="list-group-item list-group-item-action">FITNESS</a>
-          <a href="#" class="list-group-item list-group-item-action">SHOES</a>
-          <a href="#" class="list-group-item list-group-item-action"
-            >ACCESSORY</a
-          >
-          <a
-            href="#"
-            class="list-group-item list-group-item-action disabled"
-            tabindex="-1"
-            aria-disabled="true"
-            >OTHER</a
-          >
-        </div>
-      </div>
-      <div class="col-12 col-md-10">
-        <div class="row">
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3" v-for="item in products" :key="item.id">
-            <div class="card rounded-0 border-0">
-              <div class="text-secondary cursor-hover" @click="getProduct(item.id)">
-                <div class="product-hover">
-                  <div
-                    class="rounded-0 card-imge"
-                    :style="{backgroundImage: `url(${item.imgLink})`}">
-                  </div>
-                  <div class="mask"></div>
-                  <button v-if="item.unit != 0" type="button" class="btn btn-primary add-cart-btn w-100 rounded-0">加入購物車</button>
+  <div class="container border mt-5 pt-5">
+    <!-- 步驟條 -->
+    <ul class="process mb-5">
+      <li class="bg-primary">
+        <i class="bi bi-cart-check-fill fs-2 text-light"></i>
+        <span class="text-light">確認購買明細</span>
+      </li>
+      <li>
+        <i class="bi bi-person-lines-fill fs-2"></i>
+        <span>填寫訂購資料</span>
+      </li>
+      <li>
+        <i class="bi bi-check-circle-fill fs-2"></i>
+        <span>完成商品訂購</span>
+      </li>
+    </ul>
 
-                  <div v-if="item.unit == 0" class="mask-white">
-                    <p class="fs-3 border border-primary border-end-0 border-start-0 text-center text-primary fw-blod">SALE OUT</p>
-                  </div>
+    <table class="table table-borderless align-middle text-secondary">
+      <thead class="table-light">
+        <tr>
+          <th>縮圖</th>
+          <th>商品名稱</th>
+          <th>尺寸</th>
+          <th>數量</th>
+          <th>單價</th>
+          <th>小計</th>
+          <th>刪除</th>
+        </tr>
+      </thead>
 
-                </div>
-                <div class="pt-1 text-center">
-                  <div>{{item.title}}</div>
-                  <div v-if="item.price" class="fw-bold text-danger">NT${{item.price}}</div>
-                  <del v-if="item.price">NT${{item.origin_price}}</del>
-                  <div v-else class="fw-bold">NT${{item.origin_price}}</div>
-                </div>
-              </div>
+      <tbody>
+        <tr>
+          <td>
+            <img
+              src="https://images.pexels.com/photos/7440202/pexels-photo-7440202.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+              alt=""
+              style="width: 100px"
+            />
+          </td>
+          <td>SIRA 美胸波波綁帶比基尼(白)</td>
+          <td>XS</td>
+          <td>
+            <div class="d-flex align-items-center">
+                <button
+                  class="btn btn-sm rounded-0 d-flex align-items-center border"
+                  type="button"
+                  :class="{ disabled: count == 1 }"
+                  @click="count--"
+                >
+                  <i class="bi bi-dash"></i>
+                </button>
+
+                <span class="form-control-sm text-center border-top border-bottom rounded-0">{{ count }}</span>
+
+                <button
+                  class="btn btn-sm d-flex align-items-center border rounded-0"
+                  type="button"
+                  @click="count++"
+                >
+                  <i class="bi bi-plus"></i>
+                </button>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- <div class="row mt-4">
-      <div class="col">
-        <table class="table align-middle mt-3">
-          <thead class="table-dark">
-            <tr>
-              <th>圖片</th>
-              <th>商品名稱</th>
-              <th>價格</th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="item in products" :key="item.id">
-              <td style="width: 200px">
-                <div
-                  style="
-                    height: 100px;
-                    background-size: cover;
-                    background-position: center;
-                  "
-                  :style="{ backgroundImage: `url(https://images.pexels.com/photos/1445696/pexels-photo-1445696.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260)` }"
-                ></div>
-              </td>
-              <td>
-                <a href="">title</a>
-              </td>
-              <td>
-                <div class="h5"></div>
-                <del class="h6">原價 元</del>
-                <div class="h5">現在只要 元</div>
-              </td>
-              <td>
-                <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-outline-secondary">
-                    查看更多
-                  </button>
-                  <button type="button" class="btn btn-outline-danger">
-                    加到購物車
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-          </tbody>
-        </table>
-
-      </div>
-    </div> -->
+          </td>
+          <td>
+            <span>$ 2900</span>
+          </td>
+          <td>
+            <span>$ 2900</span>
+          </td>
+          <td>
+            <button type="button" class="btn btn-sm">
+              <i class="bi bi-trash3-fill"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -114,31 +83,20 @@
 export default {
   data () {
     return {
-      product: '',
-      products: '',
-      isLoading: false
+      count: 1
     }
   },
   methods: {
-    // 1.取得商品列表
-    getProducts () {
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`
-      this.isLoading = true
-      this.$http.get(api).then((res) => {
-        if (res.data.success) {
+    getCart () {
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`
+      this.$http.get(api)
+        .then((res) => {
           console.log(res)
-          this.products = res.data.products
-          this.isLoading = false
-        }
-      })
-    },
-    // 2.取得單一商品頁
-    getProduct (id) {
-      this.$router.push(`/user/product/${id}`)
+        })
     }
   },
   created () {
-    this.getProducts()
+    this.getCart()
   }
 }
 </script>

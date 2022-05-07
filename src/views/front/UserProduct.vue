@@ -5,7 +5,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <router-link class="text-secondary" to="/user/cart">ALL</router-link>
+          <router-link class="text-secondary" to="/user/products">ALL</router-link>
         </li>
         <li class="breadcrumb-item active" aria-current="page">{{product.category}}</li>
       </ol>
@@ -18,7 +18,7 @@
           <img
             class="img-fluid"
             :src="indexImg"
-            alt=""
+            :alt="product.title"
           />
         </div>
         <div class="other-img bg-light">
