@@ -13,3 +13,24 @@
     margin-right: 16px;
   }
 }
+
+.cart-total {
+  color: $secondary;
+  text-align: right;
+  li {
+    list-style-type: none;
+    margin-bottom: 16px ;
+    span {
+      font-weight: bold;
+      border: 1px solid #000;
+      padding: 8px 64px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  table tr td:nth-child(1) { display: none;}
+  table tr th:nth-child(1) { display: none;}
+  table tr td:nth-child(6) { display: none;}
+  table tr th:nth-child(6) { display: none;}
+}
