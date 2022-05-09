@@ -67,11 +67,11 @@
                 </div>
                 <div class="pt-1 text-center" @click="getProduct(item.id)">
                   <div>{{ item.title }}</div>
-                  <div v-if="item.price" class="fw-bold text-danger">
+                  <div v-if="item.origin_price" class="fw-bold text-danger">
                     NT${{ item.price }}
                   </div>
-                  <del v-if="item.price">NT${{ item.origin_price }}</del>
-                  <div v-else class="fw-bold">NT${{ item.origin_price }}</div>
+                  <del v-if="item.origin_price">NT${{ item.origin_price }}</del>
+                  <div v-else class="fw-bold">NT${{ item.price }}</div>
                 </div>
               </div>
             </div>

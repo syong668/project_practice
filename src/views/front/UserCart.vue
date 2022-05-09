@@ -3,28 +3,10 @@
   <div class="container">
     <div v-if="carts.length" class="border mt-5 mb-3 px-md-5 pt-5">
       <!-- 步驟條 -->
-      <ul class="process mb-5 d-none d-md-flex">
-        <li :class="{ 'bg-primary': processPath == '/user/cart' }">
-          <i
-            class="bi bi-cart-check-fill fs-2"
-            :class="{ 'text-light': processPath == '/user/cart' }"
-          ></i>
-          <span :class="{ 'text-light': processPath == '/user/cart' }"
-            >確認購買明細</span
-          >
-        </li>
-        <li>
-          <i class="bi bi-person-lines-fill fs-2"></i>
-          <span>填寫訂購資料</span>
-        </li>
-        <li>
-          <i class="bi bi-check-circle-fill fs-2"></i>
-          <span>完成商品訂購</span>
-        </li>
-      </ul>
+      <process :path="processPath"></process>
 
       <!-- 訂購列表 -->
-      <table class="table table-borderless align-middle text-secondary">
+      <table class="cart-table table table-borderless align-middle text-secondary">
         <thead class="table-light">
           <tr>
             <th>縮圖</th>
@@ -38,7 +20,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="(item, key) in carts" :key="key">
+          <tr v-for="(item, key) in carts" :key="key" class="border-bottom">
             <td>
               <img
                 class="cursor-hover"
@@ -48,9 +30,53 @@
                 style="width: 100px"
               />
             </td>
-            <td>{{ item.product.title }}</td>
-            <td>S</td>
             <td>
+              <div>{{ item.product.title }}</div>
+
+              <!-- 行動裝置顯示 -->
+              <div class="d-block d-md-none mt-2">
+                <!-- 分類 -->
+                <span v-if="item.product.category=='SWIM' || item.product.category=='FITNESS'">S</span>
+                <span v-else-if="item.product.category=='SHOES'">36</span>
+                <span v-else>-</span>
+                <!-- 數量按鈕 -->
+                <div class="mt-2">
+                  <div class="d-flex align-items-center">
+                    <button
+                      class="btn btn-sm rounded-0 d-flex align-items-center border"
+                      type="button"
+                      :class="{ disabled: item.qty == 1 }"
+                      @click="updateCart(item, 'reduceQty')"
+                    >
+                      <i class="bi bi-dash"></i>
+                    </button>
+
+                    <span
+                      class="form-control-sm text-center border-top border-bottom rounded-0"
+                      >{{ item.qty }}</span
+                    >
+
+                    <button
+                      class="btn btn-sm d-flex align-items-center border rounded-0"
+                      type="button"
+                      @click="updateCart(item, 'addQty')"
+                    >
+                      <i class="bi bi-plus"></i>
+                    </button>
+                  </div>
+                </div>
+                <!-- 單價與小計 -->
+                <div class="mt-2">{{ item.product.price }} / 件</div>
+                <div class="mt-2">小計: {{ item.total }}</div>
+              </div>
+            </td>
+            <td>
+              <span v-if="item.product.category=='SWIM' || item.product.category=='FITNESS'">S</span>
+              <span v-else-if="item.product.category=='SHOES'">36</span>
+              <span v-else>-</span>
+            </td>
+            <td>
+              <!-- 數量按鈕 -->
               <div class="d-flex align-items-center">
                 <button
                   class="btn btn-sm rounded-0 d-flex align-items-center border"
@@ -89,15 +115,32 @@
           </tr>
         </tbody>
       </table>
-      <div class="input-group">
+
+      <div class="input-group mt-5">
         <input type="text" class="form-control" placeholder="請輸入優惠代碼">
         <button class="btn btn-outline-secondary" type="button">使用</button>
       </div>
 
-      <ul class="cart-total py-5">
-        <li>總計金額</li>
-        <li><span>NT$ 15400</span></li>
-      </ul>
+      <div class="d-flex flex-row-reverse mt-5">
+        <ul class="cart-total">
+          <li>
+            <span>商品總金額</span>
+            <span class="text-dark">NT$ {{ total }}</span>
+          </li>
+          <li>
+            <span>+ 運費</span>
+            <span class="text-dark">NT$ 0</span>
+          </li>
+          <li>
+            <span>- 優惠折抵</span>
+            <span class="text-dark">NT$ 0</span>
+          </li>
+          <li>
+            <span class="h4 text-dark fw-bold">付款總金額</span>
+            <span class="h4 fw-bold text-danger">NT$ {{ payTotal }}</span>
+          </li>
+        </ul>
+      </div>
 
       <div class="d-flex flex-row-reverse py-5 border-top">
         <button class="btn btn-primary rounded-0">下一步:填寫訂購資料</button>
@@ -106,25 +149,27 @@
 
     <div v-else class="border my-5 py-5">
       <div class="text-center py-5">
+        <i class="bi bi-cart3 text-secondary" style="font-size: 120px;"></i>
         <p>您的購物車尚未加入商品</p>
-        <button class="btn btn-primary rounded-0" type="button">
-          繼續購物
-        </button>
+        <router-link class="btn btn-primary rounded-0" to="/user/products">繼續購物</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import process from '@/views/front/component/cartProcess.vue'
+
 export default {
   data () {
     return {
       carts: {},
       isLoading: false,
       qty: '',
-      processPath: ''
+      processPath: '1'
     }
   },
+  components: { process },
   methods: {
     getCart () {
       this.isLoading = true
@@ -226,10 +271,20 @@ export default {
         })
     }
   },
+  computed: {
+    total () {
+      let total = 0
+      this.carts.forEach((item) => { total += item.total })
+      return total
+    },
+    payTotal () {
+      let total = 0
+      this.carts.forEach((item) => { total += item.final_total })
+      return total
+    }
+  },
   created () {
     this.getCart()
-    this.processPath = this.$route.path
-    console.log(this.$route.path)
   }
 }
 </script>
