@@ -1,6 +1,6 @@
 .index-img{
   width: 500px;
-  height: 500px;
+  height: 650px;
   margin-bottom: 16px;
   display: flex;
   justify-content: center;
@@ -11,14 +11,20 @@
 
 .other-img {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
   overflow: hidden;
-  img {
-    width: 15%;
+  max-width: 500px;
+  div {
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
     margin-right: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
     cursor: pointer;
     &:hover {
-      border: 2px solid $primary;
+      border: 1px solid $primary;
     }
   }
 }

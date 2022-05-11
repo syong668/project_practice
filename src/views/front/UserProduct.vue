@@ -18,18 +18,17 @@
     <div class="row justify-content-center mb-5">
       <!-- 產品內容_左側 -->
       <div class="col-md-6 d-flex flex-column align-items-center">
-        <div class="index-img">
-          <img class="img-fluid" :src="indexImg" :alt="product.title" />
+        <div class="index-img" :style="{ backgroundImage: `url(${indexImg})` }">
         </div>
         <div class="other-img bg-light">
-          <img
-            v-for="(img, key) in product.images"
-            :key="key"
-            class="img-fluid"
-            :src="img"
-            :alt="key"
-            @click="changeImg(img)"
-          />
+          <div v-for="(img, key) in product.images" :key="key">
+            <img
+              class="img-fluid"
+              :src="img"
+              :alt="key"
+              @click="changeImg(img)"
+            />
+          </div>
         </div>
       </div>
 
@@ -39,14 +38,14 @@
         <div>{{ product.description }}</div>
         <hr />
         <div class="my-4">
-          <del v-if="product.price"
+          <del v-if="product.origin_price"
             >NT${{ $filters.currency(product.origin_price) }}</del
           >
-          <div v-if="product.price" class="h5 text-danger">
+          <div v-if="product.origin_price" class="h5 text-danger">
             NT${{ $filters.currency(product.price) }}
           </div>
           <div v-else class="h5">
-            NT${{ $filters.currency(product.origin_price) }}
+            NT${{ $filters.currency(product.price) }}
           </div>
         </div>
 
@@ -58,9 +57,11 @@
           <select
             class="form-select rounded-0"
             aria-label="Default select example"
+            :disabled="product.unit == 0"
           >
+            <option v-if="product.unit == 0" selected>已搶購完畢</option>
             <option value="XS" disabled>XS(已售完)</option>
-            <option value="S" selected>S</option>
+            <option value="S" :selected="product.unit != 0">S</option>
             <option value="M" disabled>M(已售完)</option>
             <option value="L" disabled>L(已售完)</option>
           </select>
@@ -71,10 +72,11 @@
           <select
             class="form-select rounded-0"
             aria-label="Default select example"
+            :disabled="product.unit == 0"
           >
-            <option selected disabled>請選擇尺寸</option>
+            <option v-if="product.unit == 0" selected>已搶購完畢</option>
             <option value="35" disabled>35(已售完)</option>
-            <option value="36" selected>36</option>
+            <option value="36" :selected="product.unit != 0">36</option>
             <option value="37" disabled>37(已售完)</option>
             <option value="38" disabled>38(已售完)</option>
             <option value="39" disabled>39(已售完)</option>
@@ -109,14 +111,18 @@
         </div>
 
         <div>
-          <button type="button" class="btn btn-primary rounded-0 w-100 mb-3"
-          @click="addCart(product.id)"
+          <button
+            type="button"
+            class="btn btn-primary rounded-0 w-100 mb-3"
+            :class="{'disabled': product.unit == 0}"
+            @click="addCart(product.id)"
           >
-            加到購物車
+            <span v-if="product.unit != 0">加到購物車</span>
+            <span v-else>補貨中</span>
           </button>
 
           <button type="button" class="btn btn-outline-primary rounded-0 w-100">
-            加入收藏
+            加入追蹤
           </button>
         </div>
 
@@ -133,8 +139,8 @@
           </li>
         </ul>
         <div class="tab-content pt-3" id="myTabContent">
-          <div class="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab">
-            {{brContent.replaceAll("\n","<br />")}}
+          <div style="white-space: pre-wrap;" class="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab">
+            {{product.content}}
           </div>
           <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
             材質 ：尼龍80%/彈性纖維20% <br>
@@ -144,7 +150,45 @@
             產地 ：台灣
           </div>
           <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-          1
+            <table class="table table-sm">
+              <tbody>
+                <tr>
+                  <td>尺寸(cm)</td>
+                  <td>XS</td>
+                  <td>S</td>
+                  <td>M</td>
+                  <td>L</td>
+                </tr>
+                <tr>
+                  <td>胸圍</td>
+                  <td>79</td>
+                  <td>84</td>
+                  <td>89</td>
+                  <td>94</td>
+                </tr>
+                <tr>
+                  <td>下胸圍</td>
+                  <td>69</td>
+                  <td>74</td>
+                  <td>79</td>
+                  <td>84</td>
+                </tr>
+                <tr>
+                  <td>腰圍</td>
+                  <td>67</td>
+                  <td>69</td>
+                  <td>74</td>
+                  <td>79</td>
+                </tr>
+                <tr>
+                  <td>臀圍</td>
+                  <td>89</td>
+                  <td>94</td>
+                  <td>99</td>
+                  <td>104</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -162,8 +206,7 @@ export default {
       id: '',
       isLoading: false,
       indexImg: '', // 當前預覽圖
-      qty: 1, // 當前數量
-      brContent: ''
+      qty: 1 // 當前數量
     }
   },
   methods: {
@@ -176,8 +219,6 @@ export default {
         if (res.data.success) {
           this.product = res.data.product
           this.indexImg = res.data.product.images[0]
-          this.brContent = res.data.product.content
-          // console.log(res.data.product.images[0])
         }
       })
     },

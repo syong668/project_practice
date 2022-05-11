@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import process from '@/views/front/component/cartProcess.vue'
+import process from '@/components/front/cartProcess.vue'
 
 export default {
   data () {

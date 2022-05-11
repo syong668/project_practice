@@ -1,6 +1,7 @@
 <template>
   <loadingTip :active="isLoading"></loadingTip>
   <div class="container">
+    [test]目前選到的分類:{{activedCategory}}
     <div class="row mt-4">
       <div class="col-md-2 d-none d-md-block">
         <div class="list-group list-group-flush rounded-0">
@@ -9,22 +10,18 @@
             href="#"
             class="list-group-item list-group-item-action active"
             aria-current="true"
+            @click.prevent="activedCategory = ''"
           >
-            SALE
+            全部商品
           </a>
-          <a href="#" class="list-group-item list-group-item-action">SWIM</a>
-          <a href="#" class="list-group-item list-group-item-action">FITNESS</a>
-          <a href="#" class="list-group-item list-group-item-action">SHOES</a>
-          <a href="#" class="list-group-item list-group-item-action"
-            >ACCESSORY</a
-          >
           <a
+            v-for="(className,key) in categories" :key="key"
             href="#"
-            class="list-group-item list-group-item-action disabled"
-            tabindex="-1"
-            aria-disabled="true"
-            >OTHER</a
+            class="list-group-item list-group-item-action"
+            @click.prevent="activedCategory = className"
           >
+            {{className}}
+          </a>
         </div>
       </div>
       <div class="col-12 col-md-10">
@@ -80,6 +77,7 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -88,7 +86,16 @@ export default {
     return {
       product: '',
       products: '',
-      isLoading: false
+      isLoading: false,
+      categories: [],
+      activedCategory: ''
+    }
+  },
+  computed: {
+    filterProducts () {
+      return this.products.filter((item) => {
+        return item.category.match(this.activedCategory)
+      })
     }
   },
   methods: {
@@ -101,6 +108,7 @@ export default {
           console.log(res)
           this.products = res.data.products
           this.isLoading = false
+          this.getCategories()
         }
       })
     },
@@ -144,6 +152,13 @@ export default {
             footer: '<a href="">請洽詢管理員</a>'
           })
         })
+    },
+    getCategories () { // 取得商品分類並過濾
+      const categories = new Set()
+      this.products.forEach((item) => {
+        categories.add(item.category)
+      })
+      this.categories = [...categories]
     }
   },
   created () {
