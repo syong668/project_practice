@@ -1,16 +1,18 @@
 <template>
   <loadingTip :active="isLoading"></loadingTip>
   <div class="container">
-    [test]目前選到的分類:{{activedCategory}}
+    [test]目前選到的分類:{{activedCategory}}<br>
+    [test]目前的分頁數:{{totalPageNum}}
     <div class="row mt-4">
       <div class="col-md-2 d-none d-md-block">
         <div class="list-group list-group-flush rounded-0">
           <!-- <a href="#" class="list-group-item list-group-item-action disabled fw-bold">產品類別</a> -->
           <a
             href="#"
-            class="list-group-item list-group-item-action active"
+            class="list-group-item list-group-item-action"
             aria-current="true"
-            @click.prevent="activedCategory = ''"
+            @click.prevent="getPage('')"
+            :class="{'active' : activedCategory === ''}"
           >
             全部商品
           </a>
@@ -18,7 +20,8 @@
             v-for="(className,key) in categories" :key="key"
             href="#"
             class="list-group-item list-group-item-action"
-            @click.prevent="activedCategory = className"
+            @click.prevent="getPage(className)"
+            :class="{'active' : activedCategory === className}"
           >
             {{className}}
           </a>
@@ -28,7 +31,7 @@
         <div class="row">
           <div
             class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3"
-            v-for="item in products"
+            v-for="item in showPageData"
             :key="item.id"
           >
             <div class="card rounded-0 border-0">
@@ -74,6 +77,48 @@
             </div>
           </div>
         </div>
+
+        <!-- 分頁 -->
+        <div class="d-flex justify-content-center">
+          <!-- <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item" :class="{'disabled':pageStatus == 0}">
+                <a
+                  class="page-link rounded-0"
+                  href="#"
+                  aria-label="Previous"
+                  @click.prevent="pageStatus--"
+                >
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <li
+                v-for="pageNum in totalPageNum"
+                :key="pageNum"
+                class="page-item"
+                :class="{'active':pageStatus == pageNum-1}"
+              >
+                <a class="page-link" href="#" @click.prevent="pageStatus = pageNum-1">{{pageNum}}</a>
+              </li>
+              <li class="page-item" :class="{'disabled':pageStatus+1 == totalPageNum}">
+                <a
+                  class="page-link rounded-0"
+                  href="#"
+                  aria-label="Next"
+                  @click.prevent="pageStatus++"
+                >
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav> -->
+
+          <pagination
+            :totalPageNum="totalPageNum"
+            :pageStatus="pageStatus"
+            @change-page="changePageNum"
+          ></pagination>
+        </div>
       </div>
     </div>
   </div>
@@ -81,23 +126,37 @@
 </template>
 
 <script>
+import pagination from '@/components/front/productsPage.vue'
+
 export default {
   data () {
     return {
-      product: '',
-      products: '',
+      products: [],
       isLoading: false,
-      categories: [],
-      activedCategory: ''
+      categories: [], // 所有產品類別
+      activedCategory: '', // 目前點選的產品類別
+      newPageDate: [], // 目前所在產品類的分頁資料
+      pageDataTotal: 8, // 每頁幾筆資料
+      pageStatus: 0 // 當下停留在第幾頁(陣列第幾筆)
     }
   },
   computed: {
+    // 濾出當前點選分類的資料
     filterProducts () {
       return this.products.filter((item) => {
         return item.category.match(this.activedCategory)
       })
+    },
+    // 根據filterProducts濾出的資料，計算分頁總數量
+    totalPageNum () {
+      return Math.ceil(this.filterProducts.length / this.pageDataTotal)
+    },
+    // 處理每一頁要渲染的資料
+    showPageData () {
+      return this.newPageDate[this.pageStatus]
     }
   },
+  components: { pagination },
   methods: {
     // 1.取得商品列表
     getProducts () {
@@ -109,6 +168,7 @@ export default {
           this.products = res.data.products
           this.isLoading = false
           this.getCategories()
+          this.getPage('')
         }
       })
     },
@@ -153,12 +213,30 @@ export default {
           })
         })
     },
-    getCategories () { // 取得商品分類並過濾
+    // 取得商品分類並過濾重複的
+    getCategories () {
       const categories = new Set()
       this.products.forEach((item) => {
         categories.add(item.category)
       })
       this.categories = [...categories]
+    },
+    // 點選分類觸發：取得某分類(className)的"每頁"資料
+    getPage (className) {
+      this.activedCategory = className
+      this.newPageDate = [] // 清空上一次push的資料，以免累加
+      this.pageStatus = 0 // 預設在第一頁(陣列第0筆)
+
+      // 將資料切割每X筆一頁
+      for (let i = 0; i < this.totalPageNum; i++) {
+        const newAry = this.filterProducts.slice(i * this.pageDataTotal, i * this.pageDataTotal + this.pageDataTotal)
+        this.newPageDate.push(newAry) // 存入每頁資料
+      }
+      console.log(this.newPageDate)
+    },
+    // emit傳進來分頁num 並觸發此方法，改變目前所在分頁再觸發showPageData
+    changePageNum (num) {
+      this.pageStatus = num
     }
   },
   created () {
