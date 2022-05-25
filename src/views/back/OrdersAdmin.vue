@@ -44,6 +44,7 @@ export default {
       this.$http.get(api).then((res) => {
         console.log(res)
         if (res.data.success) {
+          this.orders = res.data.orders
           this.isLoading = false
         }
       })

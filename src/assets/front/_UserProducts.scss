@@ -1,31 +1,56 @@
-.index-img{
-  width: 500px;
-  height: 650px;
-  margin-bottom: 16px;
-  display: flex;
-  justify-content: center;
+.cursor-hover{
+  cursor: pointer;
+}
+
+.card-imge{
+  height: 300px;
   overflow: hidden;
   background-size: cover;
   background-position: center;
+  transition: 0.5s;
 }
-
-.other-img {
-  display: flex;
-  flex-wrap: wrap;
-  overflow: hidden;
-  max-width: 500px;
-  div {
-    width: 100px;
-    height: 100px;
-    background-size: cover;
-    background-position: center;
-    margin-right: 8px;
-    margin-bottom: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    &:hover {
-      border: 1px solid $primary;
-    }
+@media (max-width:1200px) {
+  .card-imge {
+    height:200px;
   }
 }
+
+.product-hover{
+  position: relative;
+  z-index:1;
+
+  .mask, .mask-white {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity:0;
+    position: absolute;
+    z-index: 2;
+    top:0;
+  }
+
+  .mask-white {
+    background-color: rgb(255, 255, 255);
+    opacity:0.4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .add-cart-btn{
+    display: none;
+    position: absolute;
+    z-index: 3;
+    bottom:0;
+  }
+  &:hover .mask {
+    opacity: 0.4;
+    transition: .6s;
+  }
+
+  &:hover .add-cart-btn{
+    display: block;
+  }
+}
+
 

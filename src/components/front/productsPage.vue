@@ -30,8 +30,6 @@
         </a>
       </li>
     </ul>
-    {{pageStatus}}
-    {{toPage}}
   </nav>
 </template>
 

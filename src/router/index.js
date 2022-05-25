@@ -1,17 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '../views/front/HomeView.vue'
 
 const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/front/AboutView.vue')
-  },
   {
     path: '/login',
     name: 'login',
@@ -37,9 +26,14 @@ const routes = [
     ]
   },
   {
-    path: '/user',
-    component: () => import('../views/front/UserBoard.vue'),
+    path: '/',
+    name: 'Index',
+    component: () => import('../views/front/UserIndex.vue'),
     children: [
+      {
+        path: '',
+        component: () => import('../views/front/UserHome.vue')
+      },
       {
         path: 'products',
         component: () => import('../views/front/UserProducts.vue')
@@ -51,6 +45,26 @@ const routes = [
       {
         path: 'cart',
         component: () => import('../views/front/UserCart.vue')
+      },
+      {
+        path: 'checkfrom',
+        component: () => import('../views/front/UserCheckFrom.vue')
+      },
+      {
+        path: 'checkout/:orderID',
+        component: () => import('../views/front/UserCheckout.vue')
+      },
+      {
+        path: 'about',
+        component: () => import('../views/front/UserAbout.vue')
+      },
+      {
+        path: 'reserve',
+        component: () => import('../views/front/UserReserve.vue')
+      },
+      {
+        path: 'favorite',
+        component: () => import('../views/front/UserFavorite.vue')
       }
     ]
   }

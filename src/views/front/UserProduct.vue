@@ -1,11 +1,11 @@
 <template>
   <loadingTip :active="isLoading"></loadingTip>
-  <div class="container">
+  <div class="container my-4">
     <!-- 麵包屑 -->
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <router-link class="text-secondary" to="/user/products"
+          <router-link class="text-secondary" to="/products"
             >ALL</router-link
           >
         </li>
@@ -15,25 +15,22 @@
       </ol>
     </nav>
     <!-- 產品資訊 -->
-    <div class="row justify-content-center mb-5">
+    <div class="row justify-content-between mb-5">
       <!-- 產品內容_左側 -->
-      <div class="col-md-6 d-flex flex-column align-items-center">
+      <div class="col-lg-6 d-flex flex-column align-items-center">
         <div class="index-img" :style="{ backgroundImage: `url(${indexImg})` }">
         </div>
         <div class="other-img bg-light">
-          <div v-for="(img, key) in product.images" :key="key">
-            <img
-              class="img-fluid"
-              :src="img"
-              :alt="key"
-              @click="changeImg(img)"
-            />
+          <div v-for="(img, key) in product.images" :key="key"
+          :style="{ backgroundImage: `url(${img})` }"
+          @click="changeImg(img)"
+          >
           </div>
         </div>
       </div>
 
       <!-- 產品內容_右側 -->
-      <div class="col-md-4 mt-4 mt-md-0 text-Secondary">
+      <div class="col-lg-5 mt-5 mt-lg-0 text-Secondary">
         <div class="h3 mb-3 fw-bold">{{ product.title }}</div>
         <div>{{ product.description }}</div>
         <hr />
@@ -121,8 +118,9 @@
             <span v-else>補貨中</span>
           </button>
 
-          <button type="button" class="btn btn-outline-primary rounded-0 w-100">
-            加入追蹤
+          <button @click="addFavorite(product.id)" type="button" class="btn btn-outline-primary rounded-0 w-100">
+            <span v-if="favoriteData.indexOf(product.id) === -1">加入收藏</span>
+            <span v-else>取消收藏</span>
           </button>
         </div>
 
@@ -194,7 +192,48 @@
 
       </div>
     </div>
+    <hr />
+    <!-- 相關商品 -->
+    <div class="row my-5">
+
+      <div class="col-12">
+        <h3 class="mb-4 text-center fw-bold">相關產品</h3>
+        <swiper-view
+          :slidesPerView="4"
+          :spaceBetween="20"
+          :autoplay="true"
+          :breakpoints="swiper.breakpoints"
+        >
+          <swiper-slide v-for="item in sameProducts" :key="item.id">
+            <div class="card rounded-0 border-0">
+              <div class="text-secondary cursor-hover">
+                <div class="product-hover">
+                  <div
+                    class="rounded-0 card-imge"
+                    :style="{ backgroundImage: `url(${item.imgLink})` }"
+                  ></div>
+
+                  <div class="mask" @click="toProductPage(item.id)"></div>
+
+                </div>
+                <div class="pt-1 text-center" @click="getProduct()">
+                  <div>{{item.title}}</div>
+                  <div v-if="item.origin_price" class="fw-bold text-danger">
+                    NT${{item.price}}
+                  </div>
+                  <del v-if="item.origin_price">NT${{item.origin_price}}</del>
+                  <div v-else class="fw-bold">NT${{item.price}}</div>
+                </div>
+              </div>
+            </div>
+          </swiper-slide>
+
+        </swiper-view>
+      </div>
+
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -202,11 +241,47 @@ import 'bootstrap/js/dist/tab'
 export default {
   data () {
     return {
+      products: [],
       product: {},
       id: '',
       isLoading: false,
       indexImg: '', // 當前預覽圖
-      qty: 1 // 當前數量
+      qty: 1, // 當前數量
+      favoriteData: JSON.parse(localStorage.getItem('favorite')) || [],
+      swiper: {
+        breakpoints: {
+          0: {
+            slidesPerView: 2,
+            spaceBetween: 10,
+            slidesPerGroup: 2
+          },
+          567: {
+            slidesPerView: 2,
+            spaceBetween: 10,
+            slidesPerGroup: 2
+          },
+          768: {
+            slidesPerView: 3,
+            spaceBetween: 20,
+            slidesPerGroup: 3
+          },
+          1024: {
+            slidesPerView: 4,
+            spaceBetween: 20,
+            slidesPerGroup: 4
+          }
+        }
+      }
+    }
+  },
+  inject: ['emitter'],
+  computed: {
+    getCategoryProducts () {
+      return this.products.filter((item) => item.category === this.product.category && item.id !== this.product.id)
+    },
+    sameProducts () {
+      const randomNum = Math.floor(Math.random() * (this.getCategoryProducts.length))
+      return this.getCategoryProducts.slice(randomNum, this.getCategoryProducts.length)
     }
   },
   methods: {
@@ -221,6 +296,22 @@ export default {
           this.indexImg = res.data.product.images[0]
         }
       })
+    },
+    getProducts () {
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`
+      this.isLoading = true
+      this.$http.get(api).then((res) => {
+        this.isLoading = false
+        if (res.data.success) {
+          this.products = res.data.products
+          console.log(this.products)
+        }
+      })
+    },
+    toProductPage (id) {
+      this.$router.push(`/product/${id}`)
+      this.id = id
+      this.getProduct()
     },
     changeImg (img) {
       this.indexImg = img
@@ -242,6 +333,7 @@ export default {
               title: `${res.data.data.product.title}<br>已加入購物車`,
               text: '您可至購物車確認選購細項'
             })
+            this.emitter.emit('updateNavbarCart')
           } else {
             this.isLoading = false
             this.$swal({
@@ -260,6 +352,25 @@ export default {
             footer: '<a href="">請洽詢管理員</a>'
           })
         })
+    },
+    addFavorite (id) {
+      const favoriteID = this.favoriteData.indexOf(id) // 確認是否存在
+      if (favoriteID === -1) {
+        this.favoriteData.push(id) // 不存在追蹤清單內，加入此產品
+        this.$swal({
+          icon: 'success',
+          title: '商品已加入收藏清單'
+        })
+      } else {
+        this.favoriteData.splice(favoriteID, 1) // 已存在則取消追蹤
+        this.$swal({
+          icon: 'success',
+          title: '商品已從收藏清單移除'
+        })
+      }
+
+      localStorage.setItem('favorite', JSON.stringify(this.favoriteData))
+      this.emitter.emit('updateNavbarFavorite')
     }
   },
   created () {
@@ -267,6 +378,9 @@ export default {
     this.id = this.$route.params.productId
     // 2.利用ID取得單一產品資訊
     this.getProduct()
+
+    // 取全部產品資料篩相關產品
+    this.getProducts()
   }
 }
 </script>

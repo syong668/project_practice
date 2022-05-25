@@ -1,6 +1,7 @@
 <template>
   <loadingTip :active="isLoading"></loadingTip>
-  <div class="container">
+  <banner :bannerInfo="bannerInfo"></banner>
+  <div class="container mb-5">
     <div v-if="carts.length" class="border mt-5 mb-3 px-md-5 pt-5">
       <!-- 步驟條 -->
       <process :path="processPath"></process>
@@ -31,7 +32,8 @@
               />
             </td>
             <td>
-              <div>{{ item.product.title }}</div>
+              <div class="cursor-hover" @click="getProduct(item.product_id)">{{ item.product.title }}</div>
+              <div v-if="item.coupon" class="text-success">已套用優惠券 {{item.coupon.code}}</div>
 
               <!-- 行動裝置顯示 -->
               <div class="d-block d-md-none mt-2">
@@ -117,8 +119,8 @@
       </table>
 
       <div class="input-group mt-5">
-        <input type="text" class="form-control" placeholder="請輸入優惠代碼">
-        <button class="btn btn-outline-secondary" type="button">使用</button>
+        <input v-model="couponCode" type="text" class="form-control rounded-0" placeholder="請輸入優惠代碼">
+        <button @click="useCoupon" class="btn btn-outline-secondary rounded-0" type="button">使用</button>
       </div>
 
       <div class="d-flex flex-row-reverse mt-5">
@@ -133,7 +135,7 @@
           </li>
           <li>
             <span>- 優惠折抵</span>
-            <span class="text-dark">NT$ 0</span>
+            <span class="text-dark">NT$ {{ couponTotal }}</span>
           </li>
           <li>
             <span class="h4 text-dark fw-bold">付款總金額</span>
@@ -142,8 +144,9 @@
         </ul>
       </div>
 
-      <div class="d-flex flex-row-reverse py-5 border-top">
-        <button class="btn btn-primary rounded-0">下一步:填寫訂購資料</button>
+      <div class="d-flex justify-content-between py-5 border-top">
+        <router-link to="/products" class="btn btn-outline-primary rounded-0"><i class="bi bi-arrow-left pe-1"></i>繼續選購</router-link>
+        <router-link to="/checkfrom" class="btn btn-primary rounded-0">下一步:填寫訂購資料<i class="bi bi-arrow-right ps-1"></i></router-link>
       </div>
     </div>
 
@@ -151,14 +154,15 @@
       <div class="text-center py-5">
         <i class="bi bi-cart3 text-secondary" style="font-size: 120px;"></i>
         <p>您的購物車尚未加入商品</p>
-        <router-link class="btn btn-primary rounded-0" to="/user/products">繼續購物</router-link>
+        <router-link class="btn btn-primary rounded-0" to="/products">來去逛逛</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import process from '@/components/front/cartProcess.vue'
+import process from '@/components/front/CartProcess'
+import banner from '@/components/front/FrontSmallBanner.vue'
 
 export default {
   data () {
@@ -166,10 +170,32 @@ export default {
       carts: {},
       isLoading: false,
       qty: '',
-      processPath: '1'
+      processPath: '1',
+      couponCode: '',
+      bannerInfo: {
+        url: 'https://images.pexels.com/photos/7525655/pexels-photo-7525655.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+        title: '購物車',
+        position: '0% 50%'
+      }
     }
   },
-  components: { process },
+  inject: ['emitter'],
+  computed: {
+    total () {
+      let total = 0
+      this.carts.forEach((item) => { total += item.total })
+      return total
+    },
+    payTotal () {
+      let total = 0
+      this.carts.forEach((item) => { total += item.final_total })
+      return total
+    },
+    couponTotal () {
+      return this.total - this.payTotal
+    }
+  },
+  components: { process, banner },
   methods: {
     getCart () {
       this.isLoading = true
@@ -200,7 +226,7 @@ export default {
         })
     },
     getProduct (id) {
-      this.$router.push(`/user/product/${id}`)
+      this.$router.push(`/product/${id}`)
     },
     deleteCart (item) {
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${item.id}`
@@ -227,6 +253,7 @@ export default {
                 '',
                 'success'
               )
+              this.emitter.emit('updateNavbarCart')
             })
         }
       })
@@ -250,8 +277,9 @@ export default {
         .then((res) => {
           this.isLoading = false
           if (res.data.success) {
-            this.getCart()
             console.log(res)
+            this.getCart()
+            this.emitter.emit('updateNavbarCart')
           } else {
             this.$swal({
               icon: 'error',
@@ -269,18 +297,39 @@ export default {
             footer: '<a href="">請洽詢管理員</a>'
           })
         })
-    }
-  },
-  computed: {
-    total () {
-      let total = 0
-      this.carts.forEach((item) => { total += item.total })
-      return total
     },
-    payTotal () {
-      let total = 0
-      this.carts.forEach((item) => { total += item.final_total })
-      return total
+    useCoupon () {
+      this.isLoading = true
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`
+      const coupon = {
+        code: this.couponCode
+      }
+      this.$http.post(api, { data: coupon })
+        .then((res) => {
+          console.log(res)
+          this.isLoading = false
+          if (res.data.success) {
+            this.getCart()
+            this.$swal({
+              icon: 'success',
+              title: res.data.message
+            })
+          } else {
+            this.$swal({
+              icon: 'error',
+              title: res.data.message
+            })
+          }
+        })
+        .catch((err) => {
+          this.isLoading = false
+          this.$swal({
+            icon: 'error',
+            title: '發生錯誤',
+            text: err,
+            footer: '<a href="">請洽詢管理員</a>'
+          })
+        })
     }
   },
   created () {

@@ -1,11 +1,11 @@
 <template>
   <loadingTip :active="isLoading"></loadingTip>
-  <div class="container">
-    [test]目前選到的分類:{{activedCategory}}<br>
-    [test]目前的分頁數:{{totalPageNum}}
-    <div class="row mt-4">
-      <div class="col-md-2 d-none d-md-block">
-        <div class="list-group list-group-flush rounded-0">
+  <banner :bannerInfo="bannerInfo"></banner>
+  <div class="container" style="min-height: calc(100vh - 255px)">
+    <div class="row my-5">
+      <!-- 左側分類選單 -->
+      <div class="col-12 col-md-2 d-md-block">
+        <div class="d-none d-md-block list-group list-group-flush rounded-0">
           <!-- <a href="#" class="list-group-item list-group-item-action disabled fw-bold">產品類別</a> -->
           <a
             href="#"
@@ -26,11 +26,31 @@
             {{className}}
           </a>
         </div>
+
+        <!-- 手機板顯示下拉單 -->
+        <div class="d-block d-md-none dropdown mb-5">
+          <button class="btn btn-primary dropdown-toggle w-100 rounded-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            {{activedCategory == '' ? '全部產品' : activedCategory}}
+          </button>
+          <ul class="dropdown-menu w-100 rounded-0" aria-labelledby="dropdownMenuButton1">
+            <li>
+              <a class="dropdown-item" @click.prevent="getPage('')">全部產品</a>
+              <a class="dropdown-item"
+                v-for="(className,key) in categories" :key="key"
+                @click.prevent="getPage(className)"
+              >
+                {{className}}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
+
+      <!-- 右側產品列表 -->
       <div class="col-12 col-md-10">
         <div class="row">
           <div
-            class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3"
+            class="col-6 col-md-4 col-lg-3 mb-3"
             v-for="item in showPageData"
             :key="item.id"
           >
@@ -127,6 +147,8 @@
 
 <script>
 import pagination from '@/components/front/productsPage.vue'
+import banner from '@/components/front/FrontSmallBanner.vue'
+import 'bootstrap/js/dist/dropdown'
 
 export default {
   data () {
@@ -137,7 +159,12 @@ export default {
       activedCategory: '', // 目前點選的產品類別
       newPageDate: [], // 目前所在產品類的分頁資料
       pageDataTotal: 8, // 每頁幾筆資料
-      pageStatus: 0 // 當下停留在第幾頁(陣列第幾筆)
+      pageStatus: 0, // 當下停留在第幾頁(陣列第幾筆)
+      bannerInfo: {
+        url: 'https://images.pexels.com/photos/8158588/pexels-photo-8158588.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+        title: 'PRODUCTS',
+        position: '0% 35%'
+      }
     }
   },
   computed: {
@@ -156,7 +183,8 @@ export default {
       return this.newPageDate[this.pageStatus]
     }
   },
-  components: { pagination },
+  components: { pagination, banner },
+  inject: ['emitter'],
   methods: {
     // 1.取得商品列表
     getProducts () {
@@ -174,7 +202,7 @@ export default {
     },
     // 2.取得單一商品頁
     getProduct (id) {
-      this.$router.push(`/user/product/${id}`)
+      this.$router.push(`/product/${id}`)
     },
     addCart (id) {
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`
@@ -194,6 +222,7 @@ export default {
               title: `${res.data.data.product.title}<br>已加入購物車`,
               text: '您可至購物車確認選購細項'
             })
+            this.emitter.emit('updateNavbarCart')
           } else {
             this.isLoading = false
             this.$swal({
