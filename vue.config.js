@@ -1,5 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
-  publicPath: '/project_practice/dist/'
+  publicPath: '/sira_swim/dist/'
 })
