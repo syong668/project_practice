@@ -1,12 +1,21 @@
 <template>
-  <swiper-view>
+  <swiper-view
+    :navigation="true"
+    :autoplay="true"
+  >
     <swiper-slide class="home-banner photo1 text-white">
       <div class="content">
         <h3>美麗 x 自信 x 時尚</h3>
-        <span>挑選專屬你的風格比基尼</span>
+        <span class="d-block mb-3">挑選專屬你的風格比基尼</span>
+        <router-link to="/products" class="btn btn-outline-light rounded-0">SHOP NOW</router-link>
       </div>
     </swiper-slide>
-    <!-- <swiper-slide class="home-banner photo2">Slide 2</swiper-slide> -->
+    <swiper-slide class="home-banner photo2">
+      <div class="content2">
+        <h3 class="text-primary fw-bold">全館免運費</h3>
+        <span class="fs-sm">歡慶開幕不限金額消費</span>
+      </div>
+    </swiper-slide>
   </swiper-view>
 
   <!-- New Arrival -->
@@ -18,7 +27,7 @@
         New Arrival
       </h5>
     </div>
-    <div class="row mb-5 justify-content-center">
+    <div data-aos="fade-up" data-aos-duration="1000" class="row mb-5 justify-content-center">
       <div class="col-12 mb-5">
         <swiper-view
           :slidesPerView="4"
@@ -48,7 +57,13 @@
 
   <!-- 開幕慶折扣 -->
   <div class="container-fluid opensale-img mb-5">
-    <div class="container open border border-white">
+    <div
+      data-aos="fade-right"
+      data-aos-anchor-placement="bottom-bottom"
+      data-aos-delay="300"
+      data-aos-duration="500"
+      data-aos-easing="ease-out"
+      class="container open border border-white">
       <h2>/ 歡慶開幕 /</h2>
       <p>即日起至2022-09-30 全館不限金額消費 宅配免運 + 50%折扣</p>
       <span class="fs-1">SIRA50</span>
@@ -64,9 +79,18 @@
         Product
       </h5>
     </div>
-    <div class="row mb-5 justify-content-center">
+    <div
+
+      class="row mb-5 justify-content-center"
+    >
       <div class="col-11 col-lg-8 mb-5">
-        <div class="row justify-content-between">
+        <div
+          data-aos="fade-down"
+          data-aos-anchor-placement="bottom-bottom"
+          data-aos-duration="800"
+          data-aos-easing="ease-out"
+          class="row justify-content-between"
+        >
           <div @click="toAllProduct" class="product-img photo1 col-6 overflow-hidden">
             <div class="mask"></div>
             <span class="h3">SWIM</span>
@@ -97,10 +121,16 @@
         Dressing Room
       </h5>
     </div>
-    <div class="row mb-5 justify-content-center">
+    <div
+      data-aos="fade-down"
+      data-aos-anchorPlacement="top-top"
+      data-aos-duration="2000"
+      class="row mb-5 justify-content-center"
+    >
       <div class="col-11 col-lg-9 mb-5">
         <div class="dressing-room mb-5">
-          <div class="pic pic-img1"></div>
+          <div class="pic pic-img1">
+          </div>
           <div class="room-text bg-primary">
             <h4 class="fw-bold mb-3">比基尼試穿服務</h4>
             <span>諮詢比基尼顧問協助您挑選，找到最適合妳的比基尼</span>
@@ -128,7 +158,7 @@
       <v-form class="mt-5">
         <h2 class="mb-3 text-primary">訂閱 SIRA SWIM</h2>
         <div class="input-group mb-3 input-width">
-          <v-field name="email" type="text" class="form-control rounded-0 border-0" placeholder="請輸入Email" rules="email|required"></v-field>
+          <v-field name="email" type="text" class="form-control rounded-0 border-0" placeholder="輸入Email，訂閱SWIM的優惠消息" rules="email|required"></v-field>
           <button class="btn btn-primary rounded-0">訂閱</button>
         </div>
         <error-message name="email" class="d-block text-danger"></error-message>
@@ -171,7 +201,7 @@ export default {
   },
   computed: {
     NewProducts () {
-      return this.products.slice(this.products.length - 16, this.products.length)
+      return this.products.slice(10, this.products.length)
     }
   },
   methods: {
@@ -213,11 +243,10 @@ export default {
   }
   &.photo1 {
     background-image: url('@/assets/imges/HomePhoto2.jpg');
-    // background-image: url('https://images.pexels.com/photos/7817861/pexels-photo-7817861.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
   }
-  // &.photo2{
-  //   background-image: url('https://images.unsplash.com/photo-1583887785428-b8ca627eb313?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1184');
-  // }
+  &.photo2{
+    background-image: url('https://images.pexels.com/photos/5269427/pexels-photo-5269427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+  }
   .content {
     position: absolute;
     top: 50%;
@@ -230,6 +259,26 @@ export default {
     text-align: center;
     @media (max-width:768px) {
       font-size:16px;
+    }
+  }
+  .content2 {
+    padding: 32px;
+    opacity: 0.8;
+    background-color: #fff;
+    position: absolute;
+    top: 10%;
+    right: 7%;
+    color: rgb(39, 39, 39);
+    // text-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    h3 {font-size:48px;}
+    @media(max-width: 768px) {
+      padding: 8px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      h3 { font-size:24px; }
+      span{ font-size: 16px;}
     }
   }
 }
@@ -292,6 +341,7 @@ export default {
   background-size: cover;
   background-position:center;
   background-repeat: no-repeat;
+  transition: .5s;
   cursor: pointer;
   @media (max-width:768px) {
     height: 160px;
@@ -305,13 +355,13 @@ export default {
   &.photo2 {
     background-image: url('https://images.unsplash.com/photo-1597460832677-0a6bdc6d0ab0?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170');
     &:hover {
-      background-image: url('https://images.unsplash.com/photo-1597586539428-162adcb22a4c?ixlib=rb-1.2.1&raw_url=true&q=80&fm=jpg&crop=entropy&cs=tinysrgb&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687');
+      background-image: url('https://images.unsplash.com/photo-1597460761647-0d0bdf5039d3?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170');
     }
   }
   &.photo3 {
     background-image: url('https://images.unsplash.com/photo-1567347167012-29482aa7a9a8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80');
     &:hover {
-      background-image: url('https://images.unsplash.com/photo-1606902965483-3dcbb360cca5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80');
+      background-image: url('https://images.unsplash.com/photo-1601233216647-4fb22eb08425?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80');
     }
   }
   &.photo4 {

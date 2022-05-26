@@ -3,6 +3,10 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
+// 載入AOS動畫
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+
 // 載入swiper
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import SwiperCore, { Pagination, Navigation, Autoplay } from 'swiper'
@@ -55,6 +59,10 @@ setLocale('zh_TW')
 
 // 每次換頁在最上方
 router.afterEach((to, from, next) => { window.scrollTo(0, 0) })
+
+AOS.init({
+  once: true
+})
 
 const app = createApp(App)
 app.config.globalProperties.$filters = {

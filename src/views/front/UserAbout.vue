@@ -6,7 +6,7 @@
       <div class="col-12 col-md-5 pt-3 pt-md-0 bg-light d-flex justify-content-center align-items-center">
         <div class="text-center">
           <h3 class="d-inline-block pb-2 border-bottom border-3 border-primary">品牌理念</h3>
-          <p class="lh-lg mt-4">
+          <p data-aos="fade-left" data-aos-duration="1000" class="lh-lg mt-4">
             泳裝品牌SIRA SWIM 來自佛羅里達州<br>由四位熱愛水上運動的女孩創立<br>
             除了讓喜歡運動的女孩不僅在水上活動時能穿著舒適穩定的泳裝<br>
             也提供更兼具機能性的運動服裝，不管上山下海都能穿著SIRA SWIM<br>
@@ -19,7 +19,7 @@
       <div class="col-12 col-md-5 pt-3 pt-md-0 bg-light d-flex justify-content-center align-items-center">
         <div class="text-center">
           <h3 class="d-inline-block pb-2 border-bottom border-3 border-primary">經營理念</h3>
-          <p class="lh-lg mt-4">
+          <p data-aos="fade-right" data-aos-duration="1000" class="lh-lg mt-4">
             我們精心挑選較柔軟的布料<br>
             穿起來比一般泳衣布料更舒服、貼身及耐用<br>
             每款服裝設計都考量不同身型，讓每位女孩獨特的美麗線條呈現出來<br>

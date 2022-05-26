@@ -32,7 +32,7 @@
       <!-- 產品內容_右側 -->
       <div class="col-lg-5 mt-5 mt-lg-0 text-Secondary">
         <div class="h3 mb-3 fw-bold">{{ product.title }}</div>
-        <div>{{ product.description }}</div>
+        <div style="white-space: pre-wrap;">{{ product.description }}</div>
         <hr />
         <div class="my-4">
           <del v-if="product.origin_price"
@@ -310,8 +310,6 @@ export default {
     },
     toProductPage (id) {
       this.$router.push(`/product/${id}`)
-      this.id = id
-      this.getProduct()
     },
     changeImg (img) {
       this.indexImg = img
