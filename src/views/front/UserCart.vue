@@ -184,12 +184,12 @@ export default {
     total () {
       let total = 0
       this.carts.forEach((item) => { total += item.total })
-      return total
+      return Math.round(total)
     },
     payTotal () {
       let total = 0
       this.carts.forEach((item) => { total += item.final_total })
-      return total
+      return Math.round(total)
     },
     couponTotal () {
       return this.total - this.payTotal

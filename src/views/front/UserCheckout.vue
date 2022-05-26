@@ -39,7 +39,7 @@
                   <tr class="text-danger">
                     <td></td>
                     <td colspan="2">應付金額</td>
-                    <td colspan="2">NT$ {{order.total}}</td>
+                    <td colspan="2">NT$ {{Math.round(order.total)}}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -114,7 +114,7 @@ export default {
       Object.values(this.products).forEach((item) => {
         total += item.total
       })
-      return total - this.order.total
+      return Math.round(total) - Math.round(this.order.total)
     }
   },
   components: { process },
