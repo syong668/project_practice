@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import process from '@/components/front/CartProcess'
+import process from '@/components/front/CartProcess.vue'
 import banner from '@/components/front/FrontSmallBanner.vue'
 
 export default {
