@@ -146,7 +146,7 @@
 </template>
 
 <script>
-import pagination from '@/components/front/productsPage.vue'
+import pagination from '@/components/front/ProductsPage.vue'
 import banner from '@/components/front/FrontSmallBanner.vue'
 import 'bootstrap/js/dist/dropdown'
 
