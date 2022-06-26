@@ -1,10 +1,10 @@
 <template>
   <loadingTip :active="isLoading"></loadingTip>
-  <banner :bannerInfo="bannerInfo"></banner>
+  <banner :bannerInfo="bannerInfo"/>
   <div class="container mb-5">
-    <div v-if="carts.length" class="border mt-5 mb-3 px-md-5 pt-5">
+    <div v-if="carts.length" class="border mt-5 mb-3 px-0 px-lg-5 py-0 py-md-5">
       <!-- 步驟條 -->
-      <process :path="processPath"></process>
+      <process :path="processPath"/>
 
       <!-- 訂購列表 -->
       <table class="cart-table table table-borderless align-middle text-secondary">
@@ -38,8 +38,8 @@
               <!-- 行動裝置顯示 -->
               <div class="d-block d-md-none mt-2">
                 <!-- 分類 -->
-                <span v-if="item.product.category=='SWIM' || item.product.category=='FITNESS'">S</span>
-                <span v-else-if="item.product.category=='SHOES'">36</span>
+                <span v-if="item.product.category=='比基尼' || item.product.category=='運動服'">S</span>
+                <span v-else-if="item.product.category=='鞋子'">36</span>
                 <span v-else>-</span>
                 <!-- 數量按鈕 -->
                 <div class="mt-2">
@@ -73,8 +73,8 @@
               </div>
             </td>
             <td>
-              <span v-if="item.product.category=='SWIM' || item.product.category=='FITNESS'">S</span>
-              <span v-else-if="item.product.category=='SHOES'">36</span>
+              <span v-if="item.product.category=='比基尼' || item.product.category=='運動服'">S</span>
+              <span v-else-if="item.product.category=='鞋子'">36</span>
               <span v-else>-</span>
             </td>
             <td>
@@ -118,12 +118,12 @@
         </tbody>
       </table>
 
-      <div class="input-group mt-5">
+      <div class="input-group mt-5 px-2 px-lg-0">
         <input v-model="couponCode" type="text" class="form-control rounded-0" placeholder="請輸入優惠代碼">
         <button @click="useCoupon" class="btn btn-outline-secondary rounded-0" type="button">使用</button>
       </div>
 
-      <div class="d-flex flex-row-reverse mt-5">
+      <div class="d-flex flex-row-reverse mt-5 px-2 px-lg-0">
         <ul class="cart-total">
           <li>
             <span>商品總金額</span>
@@ -144,9 +144,9 @@
         </ul>
       </div>
 
-      <div class="d-flex justify-content-between py-5 border-top">
+      <div class="d-flex justify-content-between py-5 border-top px-2 px-lg-0">
         <router-link to="/products" class="btn btn-outline-primary rounded-0"><i class="bi bi-arrow-left pe-1"></i>繼續選購</router-link>
-        <router-link to="/checkfrom" class="btn btn-primary rounded-0">下一步:填寫訂購資料<i class="bi bi-arrow-right ps-1"></i></router-link>
+        <router-link to="/checkfrom" class="btn btn-primary rounded-0">填寫訂購資料<i class="bi bi-arrow-right ps-1"></i></router-link>
       </div>
     </div>
 
@@ -205,7 +205,7 @@ export default {
         .then((res) => {
           if (res.data.success) {
             console.log(res.data.data.carts)
-            this.carts = res.data.data.carts // 取得購物車資料
+            this.carts = res.data.data.carts
             this.isLoading = false
           } else {
             this.$swal({

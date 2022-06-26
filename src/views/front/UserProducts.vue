@@ -6,7 +6,6 @@
       <!-- 左側分類選單 -->
       <div class="col-12 col-md-2 d-md-block">
         <div class="d-none d-md-block list-group list-group-flush rounded-0">
-          <!-- <a href="#" class="list-group-item list-group-item-action disabled fw-bold">產品類別</a> -->
           <a
             href="#"
             class="list-group-item list-group-item-action"
@@ -14,7 +13,7 @@
             @click.prevent="getPage('')"
             :class="{'active' : activedCategory === ''}"
           >
-            全部商品
+            全部產品
           </a>
           <a
             v-for="(className,key) in categories" :key="key"
@@ -100,39 +99,6 @@
 
         <!-- 分頁 -->
         <div class="d-flex justify-content-center">
-          <!-- <nav aria-label="Page navigation example">
-            <ul class="pagination">
-              <li class="page-item" :class="{'disabled':pageStatus == 0}">
-                <a
-                  class="page-link rounded-0"
-                  href="#"
-                  aria-label="Previous"
-                  @click.prevent="pageStatus--"
-                >
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-              <li
-                v-for="pageNum in totalPageNum"
-                :key="pageNum"
-                class="page-item"
-                :class="{'active':pageStatus == pageNum-1}"
-              >
-                <a class="page-link" href="#" @click.prevent="pageStatus = pageNum-1">{{pageNum}}</a>
-              </li>
-              <li class="page-item" :class="{'disabled':pageStatus+1 == totalPageNum}">
-                <a
-                  class="page-link rounded-0"
-                  href="#"
-                  aria-label="Next"
-                  @click.prevent="pageStatus++"
-                >
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
-            </ul>
-          </nav> -->
-
           <pagination
             :totalPageNum="totalPageNum"
             :pageStatus="pageStatus"
@@ -162,7 +128,7 @@ export default {
       pageStatus: 0, // 當下停留在第幾頁(陣列第幾筆)
       bannerInfo: {
         url: 'https://images.pexels.com/photos/8158588/pexels-photo-8158588.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-        title: 'PRODUCTS',
+        title: '所有產品',
         position: '0% 35%'
       }
     }
@@ -174,7 +140,7 @@ export default {
         return item.category.match(this.activedCategory)
       })
     },
-    // 根據filterProducts濾出的資料，計算分頁總數量
+    // 根據 filterProducts 濾出的資料，計算分頁總數量
     totalPageNum () {
       return Math.ceil(this.filterProducts.length / this.pageDataTotal)
     },
@@ -186,7 +152,6 @@ export default {
   components: { pagination, banner },
   inject: ['emitter'],
   methods: {
-    // 1.取得商品列表
     getProducts () {
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`
       this.isLoading = true
@@ -200,7 +165,6 @@ export default {
         }
       })
     },
-    // 2.取得單一商品頁
     getProduct (id) {
       this.$router.push(`/product/${id}`)
     },
@@ -250,20 +214,19 @@ export default {
       })
       this.categories = [...categories]
     },
-    // 點選分類觸發：取得某分類(className)的"每頁"資料
+    // 點選分類觸發：取得某分類( className )的"每頁"資料
     getPage (className) {
       this.activedCategory = className
       this.newPageDate = [] // 清空上一次push的資料，以免累加
-      this.pageStatus = 0 // 預設在第一頁(陣列第0筆)
+      this.pageStatus = 0
 
       // 將資料切割每X筆一頁
       for (let i = 0; i < this.totalPageNum; i++) {
         const newAry = this.filterProducts.slice(i * this.pageDataTotal, i * this.pageDataTotal + this.pageDataTotal)
-        this.newPageDate.push(newAry) // 存入每頁資料
+        this.newPageDate.push(newAry)
       }
       console.log(this.newPageDate)
     },
-    // emit傳進來分頁num 並觸發此方法，改變目前所在分頁再觸發showPageData
     changePageNum (num) {
       this.pageStatus = num
     }

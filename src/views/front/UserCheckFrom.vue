@@ -1,11 +1,11 @@
 <template>
   <loadingTip :active="isLoading"></loadingTip>
   <div class="container">
-    <div class="border mt-5 mb-3 px-md-5 pt-5">
+    <div class="border my-5 px-0 px-lg-5 py-0 py-md-5">
       <process :path="processPath"></process>
 
-      <div class="row justify-content-center mt-5">
-        <div class="col-10 col-md-6">
+      <div class="row justify-content-center">
+        <div class="col-11 col-md-6">
           <div class="border-primary text-primary pb-1 h4 fw-bold mb-3">
             <div class="border-5 border-start border-primary fw-bold h5 ps-2 py-1 bg-light">收件資料</div>
           </div>
@@ -51,13 +51,13 @@
 
             <div class="my-5 d-flex justify-content-between">
               <router-link to="/cart" class="btn btn-outline-primary rounded-0"><i class="bi bi-arrow-left pe-1"></i>確認購買明細</router-link>
-              <button type="submit" class="btn btn-primary rounded-0">下一步:完成商品訂購<i class="bi bi-arrow-right ps-1"></i></button>
+              <button type="submit" class="btn btn-primary rounded-0">完成商品訂購<i class="bi bi-arrow-right ps-1"></i></button>
             </div>
 
           </v-form>
         </div>
       </div>
-      <div class="row"></div>
+
     </div>
   </div>
 </template>
@@ -85,8 +85,7 @@ export default {
   components: { process },
   methods: {
     createOrder () {
-      // 1. v-from如果驗證未通過，即使這個方法被觸發，也不會執行，要直到表單的內容都通過驗證才會執行。
-      // 2. v-from觸發的方法含參數，value會帶上表單內所有值
+      // v-from 觸發的方法含參數，value會帶上表單內所有值
       this.isLoading = true
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order`
       const order = this.form
@@ -99,12 +98,10 @@ export default {
         })
     },
     isRequired (val) {
-      // 在v-filed套用自訂驗證 :rule="isRequired"
-      // 未填寫時的錯誤狀態
+      // 自訂驗證 未填寫時的錯誤狀態
       if (!val) {
         return '此欄是必填'
       }
-      // 有填寫時的狀態
       return true
     },
     isPhone (val) {

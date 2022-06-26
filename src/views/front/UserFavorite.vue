@@ -2,14 +2,14 @@
   <loadingTip :active="isLoading"></loadingTip>
   <banner :bannerInfo="bannerInfo"></banner>
   <div class="container mb-5">
-    <div v-if="favoriteProducts.length !== 0 " class="border mt-5 mb-3 px-md-5 pt-5">
+    <div v-if="favoriteProducts.length !== 0 " class="border mt-5 mb-3 px-0 px-md-5 py-0 py-md-5">
       <table class="table table-borderless align-middle text-secondary">
         <thead class="table-light">
           <tr>
             <th>縮圖</th>
             <th>商品名稱</th>
-            <th>單價</th>
-            <th>移除</th>
+            <th class="d-none d-md-table-cell">單價</th>
+            <th colspan="2"></th>
           </tr>
         </thead>
 
@@ -25,9 +25,13 @@
               >
             </td>
             <td>
-              <span class="cursor-hover" @click="getProduct(product.id)">{{product.title}}</span>
+              <p class="cursor-hover" @click="getProduct(product.id)">{{ product.title }}</p>
+              <p class="d-block d-md-none"> 單價: {{ product.price }} </p>
             </td>
-            <td>{{product.price}}</td>
+            <td class="d-none d-md-table-cell">{{product.price}}</td>
+            <td>
+              <button type="button" class="btn btn-sm" @click="addCart(product.id)"><i class="bi bi-cart-plus-fill"></i></button>
+            </td>
             <td>
               <button type="button" class="btn btn-sm" @click="delFavorite(product.id)"><i class="bi bi-trash3-fill"></i></button>
             </td>
@@ -96,6 +100,44 @@ export default {
       }
       localStorage.setItem('favorite', JSON.stringify(this.favoriteData))
       this.emitter.emit('updateNavbarFavorite')
+    },
+    addCart (id) {
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`
+      const cart = {
+        product_id: id,
+        qty: 1
+      }
+      this.isLoading = true
+      this.$http
+        .post(api, { data: cart })
+        .then((res) => {
+          if (res.data.success) {
+            console.log(res)
+            this.isLoading = false
+            this.$swal({
+              icon: 'success',
+              title: `${res.data.data.product.title}<br>已加入購物車`,
+              text: '您可至購物車確認選購細項'
+            })
+            this.emitter.emit('updateNavbarCart')
+          } else {
+            this.isLoading = false
+            this.$swal({
+              icon: 'error',
+              title: '商品加入失敗',
+              text: '請重新加入購物車'
+            })
+          }
+        })
+        .catch((err) => {
+          this.isLoading = false
+          this.$swal({
+            icon: 'error',
+            title: '發生錯誤',
+            text: err,
+            footer: '<a href="">請洽詢管理員</a>'
+          })
+        })
     }
   },
   created () {

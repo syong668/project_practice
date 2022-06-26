@@ -62,11 +62,10 @@ export default {
       this.$http.post(api, this.user)
         .then((res) => {
           if (res.data.success) {
-            // const { token, expired } = res.data // 老師示範的物件解構寫法，與下方59.60行是相同的
             const token = res.data.token
             const expired = res.data.expired
 
-            document.cookie = `hexToken=${token}; expires=${new Date(expired)}` // 將token加入cookei
+            document.cookie = `hexToken=${token}; expires=${new Date(expired)}`
             console.log(res)
 
             this.$router.push('/dashboard/products')

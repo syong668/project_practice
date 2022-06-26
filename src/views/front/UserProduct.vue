@@ -6,7 +6,7 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
           <router-link class="text-secondary" to="/products"
-            >ALL</router-link
+            >全部產品</router-link
           >
         </li>
         <li class="breadcrumb-item active" aria-current="page">
@@ -48,7 +48,7 @@
 
         <div
           class="mb-2"
-          v-if="product.category == 'SWIM' || product.category == 'FITNESS'"
+          v-if="product.category == '比基尼' || product.category == '運動服'"
         >
           <span>尺寸</span>
           <select
@@ -64,7 +64,7 @@
           </select>
         </div>
 
-        <div class="mb-2" v-if="product.category == 'SHOES'">
+        <div class="mb-2" v-if="product.category == '鞋子'">
           <span>尺寸</span>
           <select
             class="form-select rounded-0"
@@ -352,15 +352,15 @@ export default {
         })
     },
     addFavorite (id) {
-      const favoriteID = this.favoriteData.indexOf(id) // 確認是否存在
+      const favoriteID = this.favoriteData.indexOf(id)
       if (favoriteID === -1) {
-        this.favoriteData.push(id) // 不存在追蹤清單內，加入此產品
+        this.favoriteData.push(id)
         this.$swal({
           icon: 'success',
           title: '商品已加入收藏清單'
         })
       } else {
-        this.favoriteData.splice(favoriteID, 1) // 已存在則取消追蹤
+        this.favoriteData.splice(favoriteID, 1)
         this.$swal({
           icon: 'success',
           title: '商品已從收藏清單移除'
@@ -372,12 +372,9 @@ export default {
     }
   },
   created () {
-    // 1.先取得當前路由，找到產品ID
+    // 先取得當前路由，找到產品 ID 後再跑產品資訊
     this.id = this.$route.params.productId
-    // 2.利用ID取得單一產品資訊
     this.getProduct()
-
-    // 取全部產品資料篩相關產品
     this.getProducts()
   }
 }

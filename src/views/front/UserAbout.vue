@@ -40,7 +40,7 @@ export default {
     return {
       bannerInfo: {
         url: 'https://images.pexels.com/photos/762103/pexels-photo-762103.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-        title: 'ABOUT',
+        title: '關於我們',
         position: '0% 75%'
       }
     }

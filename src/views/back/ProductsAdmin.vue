@@ -51,10 +51,6 @@
     ></PageView>
   </div>
 
-  <!-- props 請記得前內後外
-    :product="tempProduct"
-    在ProductModal定義的props名稱= 底下data定義的資料
-  -->
   <ProductModal
     @update-product="updateProduct"
     ref="productModal"
@@ -65,7 +61,7 @@
 </template>
 
 <script>
-// 載入產品列表內的兩個彈出窗
+
 import ProductModal from '@/components/back/ProductModal.vue'
 import DelModal from '@/components/back/DelModal.vue'
 import PageView from '@/components/back/PageAdmin.vue'
@@ -73,32 +69,31 @@ import PageView from '@/components/back/PageAdmin.vue'
 export default {
   data () {
     return {
-      products: [], // 所有產品
-      pagination: {}, // 總頁數(會經由props傳遞到PageView)
+      products: [],
+      pagination: {}, // 總頁數(會經由 props 傳遞到 PageView )
       tempProduct: {}, // 在新增產品時輸入的產品資料、當前載入的資料
-      isNew: false, // 透過這個屬性，來判斷是否是新增(true)or編輯(false)的狀態
-      isLoading: false // 讀取效果的開關
+      isNew: false, // 透過這個屬性，來判斷是否是新增 or 編輯的狀態
+      isLoading: false,
+      lastPage: ''
     }
   },
   components: {
-    // 區域註冊 兩個彈出窗:新增(修改)產品、刪除產品，以及分頁
     ProductModal,
     DelModal,
     PageView
   },
   inject: ['emitter'],
   methods: {
-    // 取得產品列表資訊
-    // (page = 1) 這是參數預設值的代入，若page無值預設代入1
     getProducts (page = 1) {
+      this.lastPage = page
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products/?page=${page}`
       this.isLoading = true
       this.$http.get(api)
         .then((res) => {
           if (res.data.success) {
             console.log(res)
-            this.products = res.data.products // 取得所有產品資料並賦予到data裡的products
-            this.pagination = res.data.pagination // 取得總頁碼並賦予到data裡的pagination
+            this.products = res.data.products
+            this.pagination = res.data.pagination
             this.isLoading = false
           }
         })
@@ -107,15 +102,13 @@ export default {
     openModal (isNew, item) {
       console.log(isNew, item)
       if (isNew) {
-        // 如果是新增品項(true)，就把目前的產品表單清空
         this.tempProduct = {}
       } else {
-        // 如果是編輯品項(false)，就將編輯的產品資料代入表單內
         this.tempProduct = { ...item }
       }
       this.isNew = isNew
       const productComponent = this.$refs.productModal
-      productComponent.showModal() // 將表單彈出窗打開
+      productComponent.showModal()
     },
 
     // 新增/修改表單裡的「確認」按鈕
@@ -123,37 +116,32 @@ export default {
       // 將emit傳入的新產品資料item，更新到tempProduct
       this.tempProduct = item
 
-      // 新增產品資料，以下預設api及傳送方法
       let api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product`
       let httpMethod = 'post'
 
-      // 一樣依照isNew判斷，是編輯的話，更改api及傳送方法
+      // 照isNew判斷，是編輯的話，更改api及傳送方法
       if (!this.isNew) {
         api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${item.id}`
         httpMethod = 'put'
       }
 
-      // 上面判斷完畢後，最後執行遠端傳送
       const productComponent = this.$refs.productModal
       this.isLoading = true
-      productComponent.hideModal() // 新增完畢後關閉彈出窗
+      productComponent.hideModal()
       this.$http[httpMethod](api, { data: this.tempProduct })
         .then((res) => {
-          console.log(res) // 確認結果
-          this.getProducts() // 將產品列表更新並重新渲染
+          this.getProducts(this.lastPage)
           this.isLoading = false
-          this.$httpMessageStatus(res) // 這段會執行:遠端傳送成功，將訊息傳遞至toast
+          this.$httpMessageStatus(res)
         })
     },
 
-    // 開啟 刪除Modal
     openDelProductModal (item) {
-      this.tempProduct = { ...item } // 載入當前資料(利於delProduct()代入id參數)
+      this.tempProduct = { ...item }
       const delComponent = this.$refs.delModal
       delComponent.showModal()
     },
 
-    // 刪除視窗裡的「確認刪除」按鈕
     delProduct () {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`
       this.isLoading = true
@@ -162,7 +150,7 @@ export default {
           console.log(response.data)
           const delComponent = this.$refs.delModal
           delComponent.hideModal()
-          this.getProducts()
+          this.getProducts(this.lastPage)
           this.isLoading = false
 
           this.$httpMessageStatus(response, '刪除')

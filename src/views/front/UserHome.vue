@@ -22,9 +22,9 @@
   <div class="container mt-5">
     <div class="row mt-5 justify-content-center">
       <h5
-        class="col-10 col-md-4 py-3 mb-5 border border-primary text-center text-primary"
+        class="col-10 col-md-4 py-3 mb-5 border border-primary text-center text-primary fw-bold"
       >
-        New Arrival
+        新品推薦
       </h5>
     </div>
     <div data-aos="fade-up" data-aos-duration="1000" class="row mb-5 justify-content-center">
@@ -74,9 +74,9 @@
   <div class="container mt-5">
     <div class="row mt-5 justify-content-center">
       <h5
-        class="col-10 col-md-4 py-3 mb-5 border border-primary text-center text-primary"
+        class="col-10 col-md-4 py-3 mb-5 border border-primary text-center text-primary fw-bold"
       >
-        Product
+        我們的產品
       </h5>
     </div>
     <div
@@ -93,19 +93,19 @@
         >
           <div @click="toAllProduct" class="product-img photo1 col-6 overflow-hidden">
             <div class="mask"></div>
-            <span class="h3">SWIM</span>
+            <span class="h3 fw-bold">比基尼</span>
           </div>
           <div @click="toAllProduct" class="product-img photo2 col-6">
             <div class="mask"></div>
-            <span class="h3">FITNESS</span>
+            <span class="h3 fw-bold">運動服</span>
           </div>
           <div @click="toAllProduct" class="product-img photo3 col-6">
             <div class="mask"></div>
-            <span class="h3">SHOES</span>
+            <span class="h3 fw-bold">鞋子</span>
           </div>
           <div @click="toAllProduct" class="product-img photo4 col-6">
             <div class="mask"></div>
-            <span class="h3">ACCESSORY</span>
+            <span class="h3 fw-bold">配件</span>
           </div>
         </div>
       </div>
@@ -116,9 +116,9 @@
   <div class="container mt-5">
     <div class="row mt-5 justify-content-center">
       <h5
-        class="col-10 col-md-4 py-3 mb-5 border border-primary text-center text-primary"
+        class="col-10 col-md-4 py-3 mb-5 border border-primary text-center text-primary fw-bold"
       >
-        Dressing Room
+        比基尼試衣間
       </h5>
     </div>
     <div
@@ -134,9 +134,6 @@
           <div class="room-text bg-primary">
             <h4 class="fw-bold mb-3">比基尼試穿服務</h4>
             <span>諮詢比基尼顧問協助您挑選，找到最適合妳的比基尼</span>
-            <!-- <div class="text-center mt-3">
-                <a class="btn btn-light rounded-0 border-0 border-bottom fs-6">立即預約</a>
-            </div> -->
           </div>
         </div>
 
@@ -228,6 +225,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .home-banner {
   width: 100%;
   position: relative;
@@ -258,6 +256,7 @@ export default {
     text-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
     text-align: center;
     @media (max-width:768px) {
+      h3{font-size:20px;}
       font-size:16px;
     }
   }
@@ -278,7 +277,7 @@ export default {
       left: 50%;
       transform: translate(-50%, -50%);
       h3 { font-size:24px; }
-      span{ font-size: 16px;}
+      span{ font-size: 14px;}
     }
   }
 }
@@ -348,27 +347,15 @@ export default {
   }
   &.photo1 {
     background-image: url('https://images.pexels.com/photos/7406097/pexels-photo-7406097.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
-    &:hover {
-      background-image: url('https://images.pexels.com/photos/7406098/pexels-photo-7406098.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
-    }
   }
   &.photo2 {
     background-image: url('https://images.unsplash.com/photo-1597460832677-0a6bdc6d0ab0?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170');
-    &:hover {
-      background-image: url('https://images.unsplash.com/photo-1597460761647-0d0bdf5039d3?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170');
-    }
   }
   &.photo3 {
     background-image: url('https://images.unsplash.com/photo-1567347167012-29482aa7a9a8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80');
-    &:hover {
-      background-image: url('https://images.unsplash.com/photo-1601233216647-4fb22eb08425?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80');
-    }
   }
   &.photo4 {
     background-image: url('https://images.unsplash.com/photo-1619021016992-07909c5b85d6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80');
-    &:hover {
-      background-image: url('https://images.unsplash.com/photo-1618573146650-e36dbafb59e8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80');
-    }
   }
 
   .mask {
